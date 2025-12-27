@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc.ts";
+import utc from "dayjs/plugin/utc.js";
 
 import type { DateTimeString } from "#types/brands.ts";
 

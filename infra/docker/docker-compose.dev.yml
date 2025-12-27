@@ -19,6 +19,8 @@ services:
       - "../../infra:/app/infra"
       - "../../scripts:/app/scripts"
       - "../../package.json:/app/package.json"
+      - "../../pnpm-lock.yaml:/app/pnpm-lock.yaml"
+      - "../../node_modules:/app/node_modules"
       - "../../tsconfig.json:/app/tsconfig.json"
     networks:
       - starter-network
