@@ -69,8 +69,7 @@ export async function createTestingApp(options: CreateTestingAppOptions = {}): P
         }
         logger.debug("Test app successfully closed");
       } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
-        logger.error("Error during test app teardown:", errorMessage);
+        logger.error({ err: error }, "Error during test app teardown");
       }
     },
   };

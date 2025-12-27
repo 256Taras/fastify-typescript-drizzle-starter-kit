@@ -19,10 +19,7 @@ export default function eventBusService({ logger }: Cradle): EventBus {
   emitter.setMaxListeners(100);
 
   emitter.on("error", (error: Error, eventName: string, payload: unknown) => {
-    logger.error(`[EventBus] Handler failed: ${eventName}`, {
-      error: error.message,
-      payload,
-    });
+    logger.error({ err: error, eventName, payload }, "[EventBus] Handler failed");
   });
 
   const on = <T = object>(eventName: string, handler: EventHandler<T>): void => {
@@ -39,10 +36,7 @@ export default function eventBusService({ logger }: Cradle): EventBus {
 
   const emit = (eventName: string, payload: object): Promise<void> => {
     const listenersCount = emitter.listenerCount(eventName);
-    logger.info(`[EventBus] Emitting: ${eventName}`, {
-      handlersCount: listenersCount,
-      payload,
-    });
+    logger.info({ eventName, handlersCount: listenersCount, payload }, "[EventBus] Emitting");
 
     emitter.emit(eventName, payload);
     return Promise.resolve();

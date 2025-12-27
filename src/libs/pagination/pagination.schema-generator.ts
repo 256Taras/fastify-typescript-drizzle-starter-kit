@@ -586,7 +586,7 @@ export const generateItemSchema = <TTable, TStrategy extends PaginationStrategy 
  */
 export const generatePaginatedResponseSchema = <TTable, TStrategy extends PaginationStrategy = "offset">(
   config: PaginationConfig<TTable, TStrategy>,
-): TObject => {
+): TSchema => {
   validatePaginationConfig(config);
 
   const { strategy = PAGINATION_STRATEGY.offset } = config;

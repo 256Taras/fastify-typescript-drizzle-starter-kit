@@ -31,10 +31,10 @@ const log = async (
     userAgent: context.userAgent,
   };
 
-  logger.debug(`[AuditsService] Logging: ${params.action} on ${params.entityType}`, {
-    entityId: params.entityId,
-    userId: context.userId,
-  });
+  logger.debug(
+    { action: params.action, entityType: params.entityType, entityId: params.entityId, userId: context.userId },
+    "[AuditsService] Logging action",
+  );
 
   return auditsRepository.createOne(input);
 };

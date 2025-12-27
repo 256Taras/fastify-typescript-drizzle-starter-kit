@@ -22,7 +22,7 @@ export const paginateOffset = async <TTable, TItem>(
   options: PaginationOptions = {},
 ): Promise<OffsetPaginatedResponse<TItem>> => {
   if (!paginationParams) {
-    logger.error("paginationParams is undefined", { config, options, table });
+    logger.error({ config, options, table }, "paginationParams is undefined");
     throw new BadRequestException("paginationParams is required");
   }
 
@@ -34,17 +34,17 @@ export const paginateOffset = async <TTable, TItem>(
   const page = Math.max(offsetQuery.page || 1, 1); // Ensure page is at least 1
   const { offset } = calculatePaginationOffset({ limit, page });
 
-  logger.debug("Offset pagination started", { limit, page, offset });
+  logger.debug({ limit, page, offset }, "Offset pagination started");
 
   // Build query
   const builder = new PaginationQueryBuilder(db, table, config);
 
   if (optionsSelect) {
-    logger.debug("Using optionsSelect", { optionsSelect });
+    logger.debug({ optionsSelect }, "Using optionsSelect");
     // @ts-expect-error - Drizzle column types are complex and don't fully match generic constraints
     builder.select(optionsSelect);
   } else {
-    logger.debug("Applying select from query params", { selectFields });
+    logger.debug({ selectFields }, "Applying select from query params");
     builder.applySelect(selectFields);
   }
 
@@ -58,10 +58,7 @@ export const paginateOffset = async <TTable, TItem>(
   // Execute query
   const { entities, itemCount } = await builder.execute({ limit, offset });
 
-  logger.debug("Offset pagination completed", {
-    entitiesReturned: entities?.length || 0,
-    totalItems: itemCount,
-  });
+  logger.debug({ entitiesReturned: entities?.length || 0, totalItems: itemCount }, "Offset pagination completed");
 
   const response = createPaginatedResponse({
     entities,

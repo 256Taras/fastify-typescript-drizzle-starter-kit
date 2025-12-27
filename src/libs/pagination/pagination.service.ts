@@ -19,7 +19,7 @@ const paginate = async <TTable, TStrategy extends "cursor" | "offset" = "offset"
   const { strategy = PAGINATION_STRATEGY.offset, table } = config;
 
   if (!paginationParams) {
-    deps.logger.error("paginationParams is undefined", { config, options });
+    deps.logger.error({ config, options }, "paginationParams is undefined");
     throw new Error("paginationParams is required");
   }
 

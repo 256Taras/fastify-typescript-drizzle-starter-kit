@@ -148,12 +148,7 @@ export const paginateCursor = async <TTable, TItem>(
   const limit = Math.min(requestedLimit || config.defaultLimit || 10, config.maxLimit || 100);
   const cursorColumn = config.cursorColumn || "id";
 
-  logger.debug("Cursor pagination started", {
-    after: after || null,
-    before: before || null,
-    cursorColumn,
-    limit,
-  });
+  logger.debug({ after: after || null, before: before || null, cursorColumn, limit }, "Cursor pagination started");
 
   const builder = buildCursorQuery({
     after,
@@ -179,11 +174,7 @@ export const paginateCursor = async <TTable, TItem>(
 
   const { endCursor, startCursor } = generateCursors(entities, cursorColumn);
 
-  logger.debug("Cursor pagination completed", {
-    entitiesReturned: entities.length,
-    hasMoreItems,
-    totalItems: itemCount,
-  });
+  logger.debug({ entitiesReturned: entities.length, hasMoreItems, totalItems: itemCount }, "Cursor pagination completed");
 
   return {
     // @ts-expect-error - Generic type TItem cannot be guaranteed to match unknown[] from query

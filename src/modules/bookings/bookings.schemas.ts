@@ -50,8 +50,7 @@ const bookingsSchemas = {
     response: {
       201: BOOKING_OUTPUT_CONTRACT,
       ...mapHttpErrorsToSchemaErrorCollection(
-        pick(
-          [BadRequestException.name, ConflictException.name, ForbiddenException.name, ResourceNotFoundException.name],
+        pick([BadRequestException.name, ConflictException.name, ForbiddenException.name, ResourceNotFoundException.name])(
           defaultHttpErrorCollection,
         ),
       ),
@@ -68,8 +67,7 @@ const bookingsSchemas = {
     response: {
       200: BOOKING_OUTPUT_CONTRACT,
       ...mapHttpErrorsToSchemaErrorCollection(
-        pick(
-          [BadRequestException.name, ForbiddenException.name, ResourceNotFoundException.name],
+        pick([BadRequestException.name, ForbiddenException.name, ResourceNotFoundException.name])(
           defaultHttpErrorCollection,
         ),
       ),
@@ -85,8 +83,7 @@ const bookingsSchemas = {
     response: {
       200: BOOKING_OUTPUT_CONTRACT,
       ...mapHttpErrorsToSchemaErrorCollection(
-        pick(
-          [BadRequestException.name, ForbiddenException.name, ResourceNotFoundException.name],
+        pick([BadRequestException.name, ForbiddenException.name, ResourceNotFoundException.name])(
           defaultHttpErrorCollection,
         ),
       ),
@@ -102,8 +99,7 @@ const bookingsSchemas = {
     response: {
       200: BOOKING_OUTPUT_CONTRACT,
       ...mapHttpErrorsToSchemaErrorCollection(
-        pick(
-          [BadRequestException.name, ForbiddenException.name, ResourceNotFoundException.name],
+        pick([BadRequestException.name, ForbiddenException.name, ResourceNotFoundException.name])(
           defaultHttpErrorCollection,
         ),
       ),

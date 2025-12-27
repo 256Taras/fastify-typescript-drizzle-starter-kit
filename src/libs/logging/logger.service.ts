@@ -29,7 +29,6 @@ export const TerminalOptions = {
   transport: LOGGER_CONFIG.enablePrettyPrint ? PinoPrettyTransport : undefined,
 };
 
-// @ts-expect-error - pino is callable but TypeScript doesn't recognize it properly with complex options
 const loggerService: Logger = pino(TerminalOptions) as Logger;
 
 export const logger: Logger = requestContext.get("logger") ?? loggerService;

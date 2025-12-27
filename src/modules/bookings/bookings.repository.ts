@@ -10,9 +10,9 @@ import { createBaseRepository } from "#libs/persistence/base-repository.ts";
 import { BOOKING_STATUS } from "#modules/bookings/bookings.constants.ts";
 import { BOOKING_PUBLIC_COLUMNS, bookings } from "#modules/bookings/bookings.model.ts";
 import { PROVIDER_PUBLIC_COLUMNS, providers } from "#modules/providers/providers.model.ts";
-import { Provider } from "#modules/providers/providers.types.js";
+import type { Provider } from "#modules/providers/providers.types.ts";
 import { SERVICE_PUBLIC_COLUMNS, services } from "#modules/services/services.model.ts";
-import { Service } from "#modules/services/services.types.js";
+import type { Service } from "#modules/services/services.types.ts";
 import type { DateTimeString } from "#types/brands.ts";
 
 type BookingInsertDrizzle = InferInsertModel<typeof bookings>;

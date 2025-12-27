@@ -74,11 +74,11 @@ export class DatabaseManager {
     const isCritical = notice.severity === "ERROR" || notice.severity === "FATAL";
 
     if (isCritical) {
-      logger.error("Database notice:", notice);
+      logger.error({ notice }, "Database notice");
       throw new Error(`Database error: ${notice.message || "Unknown database error"}`);
     }
 
-    logger.warn("Database notice:", notice);
+    logger.warn({ notice }, "Database notice");
   }
 
   async #tryConnect(): Promise<boolean> {

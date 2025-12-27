@@ -1,7 +1,7 @@
 import type { UUID } from "node:crypto";
 
 import { Type } from "@sinclair/typebox";
-import type { Static, TObject, TSchema, TUnion, TUnsafe } from "@sinclair/typebox";
+import type { Static, TSchema, TUnion, TUnsafe } from "@sinclair/typebox";
 
 import { ERROR_CODE_FORMAT } from "#libs/constants/error-codes.ts";
 import type { DateTimeString } from "#types/brands.ts";
@@ -75,7 +75,7 @@ interface HttpFastifyError {
   userMessage: string;
 }
 
-const mapHttpErrorToSchemaError = (httpFastifyError: HttpFastifyError): Record<string, TObject> => ({
+const mapHttpErrorToSchemaError = (httpFastifyError: HttpFastifyError): Record<string, TSchema> => ({
   [`${httpFastifyError.statusCode}`]: Type.Object(
     {
       code: createEnumTypeUnionSchema([String(httpFastifyError.code)], { description: "Error code" }),
@@ -97,7 +97,7 @@ const extractCustomErrorCode = (fullCode: string): string => {
   return fullCode.slice(startAt, startAt + ERROR_CODE_FORMAT.CUSTOM_CODE_LENGTH);
 };
 
-const sortSchemaErrorsByCodeAsc = (a: Record<string, TObject>, b: Record<string, TObject>): number => {
+const sortSchemaErrorsByCodeAsc = (a: Record<string, TSchema>, b: Record<string, TSchema>): number => {
   const aCode = Object.keys(a)[0];
   const bCode = Object.keys(b)[0];
 
@@ -109,14 +109,14 @@ const sortSchemaErrorsByCodeAsc = (a: Record<string, TObject>, b: Record<string,
 
 export const listHttpErrorsAsSchemaErrors = (
   httpErrorCollection: Record<string, HttpFastifyError>,
-): Record<string, TObject>[] => {
+): Record<string, TSchema>[] => {
   const list = Object.values(httpErrorCollection).map(mapHttpErrorToSchemaError);
   return list.sort(sortSchemaErrorsByCodeAsc);
 };
 
 export const mapHttpErrorsToSchemaErrorCollection = (
   httpErrorCollection: Record<string, HttpFastifyError>,
-): Record<string, TObject> => {
+): Record<string, TSchema> => {
   const list = listHttpErrorsAsSchemaErrors(httpErrorCollection);
   return Object.fromEntries(list.map((item) => [Object.keys(item)[0], item[Object.keys(item)[0]]]));
 };

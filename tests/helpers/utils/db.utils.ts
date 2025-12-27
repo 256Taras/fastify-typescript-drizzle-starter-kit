@@ -86,7 +86,7 @@ export function createDbHelper(drizzleDb: PostgresJsDatabase<any>) {
         try {
           await drizzleDb.execute(sql.raw(`ROLLBACK TO SAVEPOINT ${savepointId}`));
         } catch (rollbackError) {
-          logger.error("Error during rollback:", rollbackError);
+          logger.error({ err: rollbackError }, "Error during rollback");
         }
         throw error;
       }

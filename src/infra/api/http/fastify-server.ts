@@ -131,7 +131,7 @@ export class RestApiServer {
     try {
       await this.#fastify.close();
     } catch (error) {
-      logger.error("Server failed to close with error: ", error);
+      logger.error({ err: error }, "Server failed to close with error");
     }
   }
 
