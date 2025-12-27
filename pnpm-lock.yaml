@@ -45,8 +45,8 @@ importers:
         specifier: ^5.2.3
         version: 5.2.3
       '@fastify/type-provider-typebox':
-        specifier: ^5.2.0
-        version: 5.2.0(@sinclair/typebox@0.34.45)
+        specifier: ^6.1.0
+        version: 6.1.0(typebox@1.0.69)
       '@sinclair/typebox':
         specifier: ^0.34.45
         version: 0.34.45
@@ -668,10 +668,10 @@ packages:
   '@fastify/swagger@9.6.1':
     resolution: {integrity: sha512-fKlpJqFMWoi4H3EdUkDaMteEYRCfQMEkK0HJJ0eaf4aRlKd8cbq0pVkOfXDXmtvMTXYcnx3E+l023eFDBsA1HA==}
 
-  '@fastify/type-provider-typebox@5.2.0':
-    resolution: {integrity: sha512-RoUFTQNYlaVM/gXosFqlrUAD/JHC+OXLcj4DxNoMOag2GI7OydfCt+3vdT+6D2daJwhGAdkpxB0wLNqS7gf4CQ==}
+  '@fastify/type-provider-typebox@6.1.0':
+    resolution: {integrity: sha512-k29cOitDRcZhMXVjtRq0+caKxdWoArz7su+dQWGzGWnFG+fSKhevgiZ7nexHWuXOEEQzgJlh6cptIMu69beaTA==}
     peerDependencies:
-      '@sinclair/typebox': '>=0.26 <=0.34'
+      typebox: ^1.0.13
 
   '@humanfs/core@0.19.1':
     resolution: {integrity: sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA==}
@@ -3817,6 +3817,9 @@ packages:
     resolution: {integrity: sha512-VCn+LMHbd4t6sF3wfU/+HKT63C9OoyrSIf4b+vtWHpt2U7/4InZG467YDNMFMR70DdHjAdpPWmw2lzRdg0Xqqg==}
     engines: {node: '>=20'}
 
+  typebox@1.0.69:
+    resolution: {integrity: sha512-FwCcidqIxCAXRHxT9UNwiuf0f/EgLGc09K78K1d39uTLwPPmntPVs4YHxmj53RJ340pDkuPBOhOGdzg7cBYX4Q==}
+
   typed-array-buffer@1.0.3:
     resolution: {integrity: sha512-nAYYwfY3qnzX30IkA6AQZjVbtK6duGontcQm1WSG1MD94YLqK0515GNApXkoxKOWMusVssAHWLh9SeaoefYFGw==}
     engines: {node: '>= 0.4'}
@@ -4495,9 +4498,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@fastify/type-provider-typebox@5.2.0(@sinclair/typebox@0.34.45)':
+  '@fastify/type-provider-typebox@6.1.0(typebox@1.0.69)':
     dependencies:
-      '@sinclair/typebox': 0.34.45
+      typebox: 1.0.69
 
   '@humanfs/core@0.19.1': {}
 
@@ -7857,6 +7860,8 @@ snapshots:
   type-fest@5.3.1:
     dependencies:
       tagged-tag: 1.0.0
+
+  typebox@1.0.69: {}
 
   typed-array-buffer@1.0.3:
     dependencies:
