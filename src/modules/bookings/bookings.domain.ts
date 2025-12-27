@@ -6,8 +6,11 @@ import type { Service } from "#modules/services/services.types.d.ts";
 import type { DateTimeString } from "#types/brands.ts";
 
 const HOURS_BEFORE_START_FOR_FREE_CANCELLATION = 24;
+
 const CANCELLATION_FEE_PERCENTAGE = 0.2;
+
 const MS_PER_HOUR = 1000 * 60 * 60;
+
 const MS_PER_MINUTE = 60 * 1000;
 
 export const canCreateBooking = (service: Service, userId: string, providerUserId: string): boolean => {

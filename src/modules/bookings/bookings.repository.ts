@@ -1,14 +1,18 @@
 import type { UUID } from "node:crypto";
 
 import type { Cradle } from "@fastify/awilix";
-import { and, eq, gt, inArray, type InferInsertModel, lt } from "drizzle-orm";
+import { and, eq, gt, type InferInsertModel, lt, notInArray } from "drizzle-orm";
 import { partial } from "rambda";
 
-import type { Booking, BookingInsert, BookingStatus } from "./bookings.types.d.ts";
+import type { Booking, BookingInsert } from "./bookings.types.d.ts";
 
 import { createBaseRepository } from "#libs/persistence/base-repository.ts";
 import { BOOKING_STATUS } from "#modules/bookings/bookings.constants.ts";
 import { BOOKING_PUBLIC_COLUMNS, bookings } from "#modules/bookings/bookings.model.ts";
+import { PROVIDER_PUBLIC_COLUMNS, providers } from "#modules/providers/providers.model.ts";
+import { Provider } from "#modules/providers/providers.types.js";
+import { SERVICE_PUBLIC_COLUMNS, services } from "#modules/services/services.model.ts";
+import { Service } from "#modules/services/services.types.js";
 import type { DateTimeString } from "#types/brands.ts";
 
 type BookingInsertDrizzle = InferInsertModel<typeof bookings>;
@@ -18,7 +22,6 @@ const findManyByServiceIdAndTimeRange = async (
   serviceId: UUID,
   startAt: DateTimeString,
   endAt: DateTimeString,
-  excludeStatuses: BookingStatus[] = [BOOKING_STATUS.cancelled],
 ): Promise<Array<{ endAt: DateTimeString; startAt: DateTimeString }>> => {
   const result = await db
     .select({ startAt: bookings.startAt, endAt: bookings.endAt })
@@ -28,23 +31,33 @@ const findManyByServiceIdAndTimeRange = async (
         eq(bookings.serviceId, serviceId),
         lt(bookings.startAt, endAt),
         gt(bookings.endAt, startAt),
-        excludeStatuses.length > 0
-          ? inArray(bookings.status, [BOOKING_STATUS.pending, BOOKING_STATUS.confirmed, BOOKING_STATUS.completed])
-          : undefined,
+        notInArray(bookings.status, [BOOKING_STATUS.cancelled]),
       ),
     );
 
   return result;
 };
 
-const findManyByUserId = async ({ db }: Cradle, userId: UUID): Promise<Booking[]> => {
-  const result = await db
-    .select(BOOKING_PUBLIC_COLUMNS)
+const findOneByIdWithContext = async (
+  { db }: Cradle,
+  id: UUID,
+): Promise<{
+  booking: Booking;
+  provider: Provider;
+  service: Service;
+} | null> => {
+  const [result] = await db
+    .select({
+      booking: BOOKING_PUBLIC_COLUMNS,
+      provider: PROVIDER_PUBLIC_COLUMNS,
+      service: SERVICE_PUBLIC_COLUMNS,
+    })
     .from(bookings)
-    .where(eq(bookings.userId, userId))
-    .orderBy(bookings.startAt);
+    .innerJoin(services, eq(bookings.serviceId, services.id))
+    .innerJoin(providers, eq(services.providerId, providers.id))
+    .where(eq(bookings.id, id));
 
-  return result;
+  return result ?? null;
 };
 
 const updateOneById = async (
@@ -72,8 +85,8 @@ export default function bookingsRepository(deps: Cradle) {
   return {
     createOne: baseRepo.createOne,
     findOneById: baseRepo.findOneById,
+    findOneByIdWithContext: partial(findOneByIdWithContext, [deps]),
     findManyByServiceIdAndTimeRange: partial(findManyByServiceIdAndTimeRange, [deps]),
-    findManyByUserId: partial(findManyByUserId, [deps]),
     updateOneById: partial(updateOneById, [deps]),
   };
 }

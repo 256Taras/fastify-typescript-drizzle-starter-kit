@@ -29,6 +29,13 @@
       "when": 1766761092316,
       "tag": "0003_mysterious_network",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1766856018608,
+      "tag": "0004_public_omega_sentinel",
+      "breakpoints": true
     }
   ]
 }

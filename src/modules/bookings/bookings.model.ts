@@ -29,6 +29,7 @@ export const bookings = pgTable(
     endAt: timestamp("end_at", { mode: "string" }).$type<DateTimeString>().notNull(),
     status: bookingStatusEnum("status").notNull().default(BOOKING_STATUS.pending),
     totalPrice: integer("total_price").notNull(),
+    cancellationFee: integer("cancellation_fee"),
     cancellationReason: text("cancellation_reason"),
     cancelledAt: timestamp("cancelled_at", { mode: "string" }).$type<DateTimeString>(),
     createdAt: timestamp("created_at", { mode: "string" }).$type<DateTimeString>().defaultNow().notNull(),

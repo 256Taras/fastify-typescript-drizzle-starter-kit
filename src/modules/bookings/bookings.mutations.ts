@@ -111,6 +111,7 @@ const cancelBooking = async (
 
   const updatedBooking = await bookingsRepository.updateOneById(bookingId, {
     status: BOOKING_STATUS.cancelled,
+    cancellationFee,
     cancellationReason: input.reason,
     cancelledAt: dateTimeService.toISOString(cancelledAt),
   });
@@ -129,37 +130,19 @@ const cancelBooking = async (
 };
 
 const confirmBooking = async (
-  {
-    bookingsRepository,
-    servicesRepository,
-    providersRepository,
-    usersRepository,
-    eventBus,
-    logger,
-    sessionStorageService,
-  }: Cradle,
+  { bookingsRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
   bookingId: UUID,
 ): Promise<Booking> => {
   const { userId: providerUserId } = sessionStorageService.getUser();
 
   logger.debug(`[BookingsMutations] Confirming booking: ${bookingId}`);
 
-  const booking = await bookingsRepository.findOneById(bookingId);
-  if (!booking) {
+  const context = await bookingsRepository.findOneByIdWithContext(bookingId);
+  if (!context) {
     throw new ResourceNotFoundException(`Booking with id: ${bookingId} not found`);
   }
 
-  const service = await servicesRepository.findOneById(booking.serviceId);
-  if (!service) {
-    throw new ResourceNotFoundException(`Service with id: ${booking.serviceId} not found`);
-  }
-
-  const provider = await providersRepository.findOneById(service.providerId);
-  if (!provider) {
-    throw new ResourceNotFoundException(`Provider not found`);
-  }
-
-  if (!canConfirmBooking(booking, providerUserId, provider.userId)) {
+  if (!canConfirmBooking(context.booking, providerUserId, context.provider.userId)) {
     throw new ForbiddenException("Cannot confirm this booking");
   }
 
@@ -180,38 +163,20 @@ const confirmBooking = async (
   return updatedBooking;
 };
 
-const completeBooking = async (deps: Cradle, bookingId: UUID): Promise<Booking> => {
-  const {
-    bookingsRepository,
-    servicesRepository,
-    providersRepository,
-    usersRepository,
-    dateTimeService,
-    eventBus,
-    logger,
-    sessionStorageService,
-  } = deps;
-
+const completeBooking = async (
+  { bookingsRepository, usersRepository, dateTimeService, eventBus, logger, sessionStorageService }: Cradle,
+  bookingId: UUID,
+): Promise<Booking> => {
   const { userId: providerUserId } = sessionStorageService.getUser();
 
   logger.debug(`[BookingsMutations] Completing booking: ${bookingId}`);
 
-  const booking = await bookingsRepository.findOneById(bookingId);
-  if (!booking) {
+  const context = await bookingsRepository.findOneByIdWithContext(bookingId);
+  if (!context) {
     throw new ResourceNotFoundException(`Booking with id: ${bookingId} not found`);
   }
 
-  const service = await servicesRepository.findOneById(booking.serviceId);
-  if (!service) {
-    throw new ResourceNotFoundException(`Service with id: ${booking.serviceId} not found`);
-  }
-
-  const provider = await providersRepository.findOneById(service.providerId);
-  if (!provider) {
-    throw new ResourceNotFoundException(`Provider not found`);
-  }
-
-  if (!canCompleteBooking(booking, providerUserId, provider.userId, dateTimeService.nowDate())) {
+  if (!canCompleteBooking(context.booking, providerUserId, context.provider.userId, dateTimeService.nowDate())) {
     throw new ForbiddenException("Cannot complete this booking yet");
   }
 

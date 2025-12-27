@@ -1,0 +1,1 @@
+ALTER TABLE "bookings" ADD COLUMN "cancellation_fee" integer;
