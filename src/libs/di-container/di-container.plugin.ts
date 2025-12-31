@@ -49,7 +49,7 @@ const diContainerPlugin: FastifyPluginAsyncTypebox<PluginOptions> = async (app, 
     },
   });
 
-  await registerEventHandlers(diContainer.cradle);
+  void registerEventHandlers(diContainer.cradle);
 
   app.register(fastifyAwilixPlugin, {
     disposeOnClose: true,

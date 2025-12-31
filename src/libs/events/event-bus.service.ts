@@ -31,7 +31,6 @@ export default function eventBusService({ logger }: Cradle): EventBus {
         emitter.emit("error", error as Error, eventName, payload);
       }
     });
-    logger.debug(`[EventBus] Handler registered: ${eventName}`);
   };
 
   const emit = (eventName: string, payload: object): Promise<void> => {
