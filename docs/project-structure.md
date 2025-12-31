@@ -1,63 +1,152 @@
-# Project structure
+# Project Structure
 
-## Folder structure
+## Overview
 
-[Folder structure conventions](https://github.com/kriasoft/Folder-Structure-Conventions/blob/master/README.md)
+```text
+.
+├── configs/              # Environment files (.env, .env.test)
+├── docs/                 # Documentation
+├── infra/                # Docker, database migrations, CI/CD
+├── scripts/              # Build and utility scripts
+├── src/                  # Application source code
+└── tests/                # Automated tests
+```
 
-## Top-level directory layout
+## Source Code (`src/`)
 
-    .
-    ├── configs                 # Top level configs of project, related to infra & development time (`.ENV_CONFIG` files)
-    ├── docs                    # Documentation files
-    ├── src                     # Source files (alternatively `lib` or `app`)
-    ├── tests                   # Automated tests (alternatively `spec` or `test`)
-    ├── infra                   # Tools and utilities, scripts
-    └── README.md
+```text
+src/
+├── index.ts              # Application entry point
+├── configs/              # Configuration modules
+├── infra/                # Infrastructure layer
+├── libs/                 # Shared utilities
+├── modules/              # Business modules
+└── types/                # Global type definitions
+```
 
-- `configs` - stores `.ENV_CONFIG` & files with configs.
+### `configs/`
 
-### Automated tests
+Environment-based configuration with TypeBox validation.
 
-> **Q: Why tests are placed into a separate folder, as opposed to having them closer to the code under test?**
->
-> **A:** Because you don't want to test the code, you want to test the _program_.
+| File | Description |
+|------|-------------|
+| `env.config.ts` | Environment schema and validation |
+| `app.config.ts` | Application settings |
+| `db.config.ts` | Database connection |
+| `server.config.ts` | HTTP server settings |
+| `logger.config.ts` | Pino logger settings |
+| `fastify-*.config.ts` | Fastify plugin configs |
 
-    .
-    ├── ...
-    ├── tests                   # Test files (alternatively `spec` or `test`)
-    │   ├── benchmarks          # Load and stress tests
-    │   ├── integration         # End-to-end, integration tests (alternatively `e2e`)
-    │   └── unit                # Unit tests
-    │   └── examples            # Example tests tests. Just shows how to implement tests
-    └── ...
+### `infra/`
 
-### Source code
+Infrastructure layer - HTTP server and database.
 
-    .
-    ├── ...
-    ├── src                     # Source files
-    │   ├── infra               # Infrastructure layer (database, messaging systems)
-    │   ├── libs                # Libraries and utilities shared across the project
-    │   ├── configs             # Configurations related to the code: logger, fastify, etc.
-    │   ├── @types              # Upper layer types used in the project (JSDoc, .d.ts files)
-    │   ├── modules             # Store separate modules for specific functionalities
-    │   │   ├── users           # User module (authentication, user management)
-    │   │   ├── products        # Product module (product listings, inventory)
-    │   │   ├── orders          # Order module (order processing, tracking)
-    │   │   └── payment s       # Payment module (payment processing, integrations)
-    │   └── app.ts              # Main application entry point
-    └── ...
+```text
+infra/
+├── api/http/
+│   ├── fastify-server.ts        # HTTP server class
+│   ├── fastify-error-handler.ts # Global error handling
+│   └── routes/
+│       └── health-check.router.ts
+└── database/
+    ├── db.ts                    # Database connection
+    ├── db-schema.ts             # Schema registry
+    └── table-names.ts           # Table name constants
+```
 
+### `libs/`
 
-### `configs`
+Shared utilities and cross-cutting concerns.
 
-`configs` folder should contain all project related settings except code-related.
-But there are some exceptions, for settings that cannot be placed in this folder.
+| Directory | Description |
+|-----------|-------------|
+| `auth/` | JWT authentication plugin |
+| `di-container/` | Awilix dependency injection |
+| `email/` | Email service with templates |
+| `encryption/` | Crypto utilities |
+| `errors/` | Domain error classes |
+| `events/` | Event bus (EventEmitter) |
+| `logging/` | Pino logger plugin |
+| `pagination/` | Cursor/offset pagination |
+| `persistence/` | Unit of Work, transactions |
+| `session-storage/` | Request-scoped storage |
+| `constants/` | Shared constants |
+| `contracts/` | Shared TypeBox contracts |
+| `utils/` | Utility functions |
 
-<strong>Some exceptions explanation</strong>
+### `modules/`
 
-- `.editorconfig` - Is not "When you add an .editorconfig file to a folder in your file hierarchy, its settings apply to all applicable files at that level and below."
+Business modules. Each module is self-contained.
 
-- `.nvmrc` - should be placed in root, to enable `nvm use` command applicable easy.
+```text
+modules/
+├── auth/        # Authentication (login, register, tokens)
+├── users/       # User management
+├── providers/   # Service providers
+├── services/    # Services catalog
+├── bookings/    # Booking management
+├── payments/    # Payment processing
+├── reviews/     # Reviews and ratings
+└── audits/      # Audit logging
+```
 
-- `package.json`/`package-lock.json`/`.gitignore`
+#### Module File Structure
+
+Each module follows a consistent pattern:
+
+| File | Purpose |
+|------|---------|
+| `*.model.ts` | Drizzle schema (tables, columns) |
+| `*.contracts.ts` | TypeBox type definitions |
+| `*.schemas.ts` | Fastify route schemas |
+| `*.router.v1.ts` | HTTP endpoints |
+| `*.queries.ts` | Read operations (CQS Query) |
+| `*.mutations.ts` | Write operations (CQS Command) |
+| `*.repository.ts` | Data access layer |
+| `*.events.ts` | Domain event constants |
+| `*.event-handlers.ts` | Event subscribers |
+| `*.pagination-config.ts` | Pagination settings |
+| `*.types.d.ts` | Module type definitions |
+
+### `types/`
+
+Global TypeScript definitions.
+
+| File | Description |
+|------|-------------|
+| `index.d.ts` | Re-exports |
+| `config.types.d.ts` | Config types |
+| `fastify-augmentation.d.ts` | Fastify type extensions |
+
+## Tests (`tests/`)
+
+```text
+tests/
+├── unit/           # Unit tests (mocked dependencies)
+├── integration/    # Integration tests (with database)
+├── e2e/            # End-to-end API tests
+└── helpers/        # Test utilities
+```
+
+## Infrastructure (`infra/`)
+
+```text
+infra/
+├── database/
+│   └── drizzle.config.js    # Drizzle ORM config
+└── docker/
+    ├── docker-compose.yml        # Base compose
+    ├── docker-compose.dev.yml    # Development
+    ├── docker-compose.test.yml   # Test environment
+    └── docker-compose.monitoring.yml  # Prometheus, Grafana
+```
+
+## Scripts (`scripts/`)
+
+```text
+scripts/
+├── database/
+│   └── seed.script.js    # Database seeding
+└── env/
+    └── validate-env.ts   # Environment validation
+```
