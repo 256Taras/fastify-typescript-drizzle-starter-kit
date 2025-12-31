@@ -1,0 +1,388 @@
+{
+  "Fastify Route Handler": {
+    "prefix": "froute",
+    "scope": "typescript",
+    "body": [
+      "app.${1|get,post,put,patch,delete|}(\"${2:/path}\", {",
+      "  schema: ${3:schemas}.${4:method},",
+      "  async handler(req, rep) {",
+      "    $0",
+      "  },",
+      "});"
+    ],
+    "description": "Fastify route handler with schema"
+  },
+
+  "Fastify Router Plugin": {
+    "prefix": "frouter",
+    "scope": "typescript",
+    "body": [
+      "import type { FastifyPluginAsyncTypebox } from \"@fastify/type-provider-typebox\";",
+      "",
+      "import ${1:module}Schemas from \"./${1:module}.schemas.ts\";",
+      "",
+      "const ${1:module}RouterV1: FastifyPluginAsyncTypebox = async (app) => {",
+      "  const { ${1:module}Mutations, ${1:module}Queries } = app.diContainer.cradle;",
+      "",
+      "  app.addHook(\"preHandler\", app.auth([app.verifyJwt]));",
+      "",
+      "  app.get(\"/\", {",
+      "    schema: ${1:module}Schemas.getMany,",
+      "    async handler(req) {",
+      "      return ${1:module}Queries.findMany(app.transformers.getPaginationQuery(req));",
+      "    },",
+      "  });",
+      "",
+      "  app.get(\"/:id\", {",
+      "    schema: ${1:module}Schemas.getOne,",
+      "    async handler(req) {",
+      "      return ${1:module}Queries.findOneById(req.params.id);",
+      "    },",
+      "  });",
+      "",
+      "  app.post(\"/\", {",
+      "    schema: ${1:module}Schemas.createOne,",
+      "    async handler(req, rep) {",
+      "      rep.status(201);",
+      "      return ${1:module}Mutations.createOne(req.body);",
+      "    },",
+      "  });",
+      "};",
+      "",
+      "export default ${1:module}RouterV1;"
+    ],
+    "description": "Fastify router with CRUD endpoints"
+  },
+
+  "Repository Function": {
+    "prefix": "repofn",
+    "scope": "typescript",
+    "body": [
+      "const ${1:functionName} = async (",
+      "  { db }: Cradle,",
+      "  ${2:id}: ${3:string},",
+      "): Promise<${4:Entity} | null> => {",
+      "  const [result] = await db",
+      "    .select()",
+      "    .from(${5:table})",
+      "    .where(eq(${5:table}.id, ${2:id}));",
+      "",
+      "  return result ?? null;",
+      "};"
+    ],
+    "description": "Repository function with Drizzle"
+  },
+
+  "Repository Module": {
+    "prefix": "repomod",
+    "scope": "typescript",
+    "body": [
+      "import type { UUID } from \"node:crypto\";",
+      "",
+      "import type { Cradle } from \"@fastify/awilix\";",
+      "import { eq } from \"drizzle-orm\";",
+      "import { partial } from \"rambda\";",
+      "",
+      "import type { ${1:Entity}, ${1:Entity}Insert } from \"./${2:module}.types.d.ts\";",
+      "",
+      "import { createBaseRepository } from \"#libs/persistence/base-repository.ts\";",
+      "import { ${3:TABLE}_PUBLIC_COLUMNS, ${4:table} } from \"#modules/${2:module}/${2:module}.model.ts\";",
+      "",
+      "export default function ${2:module}Repository(deps: Cradle) {",
+      "  const baseRepo = createBaseRepository<typeof ${4:table}, ${1:Entity}, ${1:Entity}Insert>({",
+      "    table: ${4:table},",
+      "    logger: deps.logger,",
+      "    db: deps.db,",
+      "    defaultSelectColumns: ${3:TABLE}_PUBLIC_COLUMNS,",
+      "  });",
+      "",
+      "  return {",
+      "    createOne: baseRepo.createOne,",
+      "    findOneById: baseRepo.findOneById,",
+      "  };",
+      "}"
+    ],
+    "description": "Repository module with base repository"
+  },
+
+  "Queries Module": {
+    "prefix": "queriesmod",
+    "scope": "typescript",
+    "body": [
+      "import type { Cradle } from \"@fastify/awilix\";",
+      "import { partial } from \"rambda\";",
+      "",
+      "import { ${1:MODULE}_PAGINATION_CONFIG } from \"./${2:module}.pagination-config.ts\";",
+      "import type { ${3:Entity}, ${3:Entity}ListResponse } from \"./${2:module}.types.d.ts\";",
+      "",
+      "import { ResourceNotFoundException } from \"#libs/errors/domain.errors.ts\";",
+      "import type { PaginationParams } from \"#libs/pagination/pagination.types.d.ts\";",
+      "",
+      "const findOneById = async ({ ${2:module}Repository, logger }: Cradle, id: string): Promise<${3:Entity}> => {",
+      "  logger.debug(\"[${3:Entity}Queries] Getting ${2:module}: \" + id);",
+      "",
+      "  const result = await ${2:module}Repository.findOneById(id);",
+      "  if (!result) throw new ResourceNotFoundException(\"${3:Entity} with id: \" + id + \" not found\");",
+      "",
+      "  return result;",
+      "};",
+      "",
+      "const findMany = async (",
+      "  { paginationService, logger }: Cradle,",
+      "  paginationParams: PaginationParams,",
+      "): Promise<${3:Entity}ListResponse> => {",
+      "  logger.debug(\"[${3:Entity}Queries] Getting ${2:module} list\");",
+      "",
+      "  return paginationService.paginate(${1:MODULE}_PAGINATION_CONFIG, paginationParams);",
+      "};",
+      "",
+      "export default function ${2:module}Queries(deps: Cradle) {",
+      "  return {",
+      "    findOneById: partial(findOneById, [deps]),",
+      "    findMany: partial(findMany, [deps]),",
+      "  };",
+      "}"
+    ],
+    "description": "Queries module with pagination"
+  },
+
+  "Mutations Module": {
+    "prefix": "mutationsmod",
+    "scope": "typescript",
+    "body": [
+      "import type { UUID } from \"node:crypto\";",
+      "",
+      "import type { Cradle } from \"@fastify/awilix\";",
+      "import { partial } from \"rambda\";",
+      "",
+      "import { ${1:MODULE}_EVENTS } from \"./${2:module}.events.ts\";",
+      "import type { ${3:Entity}, ${3:Entity}CreateInput } from \"./${2:module}.types.d.ts\";",
+      "",
+      "import { ResourceNotFoundException } from \"#libs/errors/domain.errors.ts\";",
+      "",
+      "const createOne = async (",
+      "  { ${2:module}Repository, eventBus, logger, sessionStorageService }: Cradle,",
+      "  input: ${3:Entity}CreateInput,",
+      "): Promise<${3:Entity}> => {",
+      "  const { userId } = sessionStorageService.getUser();",
+      "",
+      "  logger.debug(\"[${3:Entity}Mutations] Creating ${2:module}\");",
+      "",
+      "  const created = await ${2:module}Repository.createOne(input);",
+      "",
+      "  await eventBus.emit(${1:MODULE}_EVENTS.CREATED, { ${2:module}: created });",
+      "",
+      "  logger.info(\"[${3:Entity}Mutations] ${3:Entity} created: \" + created.id);",
+      "",
+      "  return created;",
+      "};",
+      "",
+      "export default function ${2:module}Mutations(deps: Cradle) {",
+      "  return {",
+      "    createOne: partial(createOne, [deps]),",
+      "  };",
+      "}"
+    ],
+    "description": "Mutations module with events"
+  },
+
+  "Mutation Function": {
+    "prefix": "mutationfn",
+    "scope": "typescript",
+    "body": [
+      "const ${1:functionName} = async (",
+      "  { ${2:module}Repository, eventBus, logger, sessionStorageService }: Cradle,",
+      "  ${3:id}: UUID,",
+      "): Promise<${4:Entity}> => {",
+      "  const { userId } = sessionStorageService.getUser();",
+      "",
+      "  logger.debug(\"[${4:Entity}Mutations] ${1:functionName}: \" + ${3:id});",
+      "",
+      "  const entity = await ${2:module}Repository.findOneById(${3:id});",
+      "  if (!entity) {",
+      "    throw new ResourceNotFoundException(\"${4:Entity} with id: \" + ${3:id} + \" not found\");",
+      "  }",
+      "",
+      "  // TODO: add business logic",
+      "",
+      "  return entity;",
+      "};"
+    ],
+    "description": "Mutation function"
+  },
+
+  "Domain Guard Function": {
+    "prefix": "domainguard",
+    "scope": "typescript",
+    "body": [
+      "export const can${1:Action}${2:Entity} = (",
+      "  ${3:entity}: ${2:Entity},",
+      "  userId: string,",
+      "): boolean => {",
+      "  return ${3:entity}.userId === userId;",
+      "};"
+    ],
+    "description": "Domain guard function"
+  },
+
+  "Domain Helper Function": {
+    "prefix": "domainhelper",
+    "scope": "typescript",
+    "body": [
+      "export const calculate${1:Something} = (${2:params}: ${3:Type}): ${4:ReturnType} => {",
+      "  $0",
+      "};"
+    ],
+    "description": "Domain helper function"
+  },
+
+  "TypeBox Schema": {
+    "prefix": "tschema",
+    "scope": "typescript",
+    "body": [
+      "export const ${1:SCHEMA_NAME} = Type.Object({",
+      "  ${2:field}: Type.${3|String,Number,Boolean,Array,Object|}(),",
+      "});"
+    ],
+    "description": "TypeBox schema"
+  },
+
+  "TypeBox Contract": {
+    "prefix": "tcontract",
+    "scope": "typescript",
+    "body": [
+      "import { Type } from \"@sinclair/typebox\";",
+      "import { createInsertSchema, createSelectSchema } from \"drizzle-typebox\";",
+      "",
+      "import { ${1:table} } from \"./${2:module}.model.ts\";",
+      "",
+      "export const ${3:ENTITY}_ENTITY_CONTRACT = createSelectSchema(${1:table});",
+      "",
+      "export const ${3:ENTITY}_INSERT_CONTRACT = createInsertSchema(${1:table});",
+      "",
+      "export const ${3:ENTITY}_OUTPUT_CONTRACT = ${3:ENTITY}_ENTITY_CONTRACT;",
+      "",
+      "export const ${3:ENTITY}_CREATE_INPUT_CONTRACT = Type.Object({",
+      "  $0",
+      "});"
+    ],
+    "description": "TypeBox contracts from Drizzle schema"
+  },
+
+  "Event Constants": {
+    "prefix": "events",
+    "scope": "typescript",
+    "body": [
+      "export const ${1:MODULE}_EVENTS = {",
+      "  CREATED: \"${2:module}.created\",",
+      "  UPDATED: \"${2:module}.updated\",",
+      "  DELETED: \"${2:module}.deleted\",",
+      "} as const;"
+    ],
+    "description": "Event constants"
+  },
+
+  "Event Handler": {
+    "prefix": "eventhandler",
+    "scope": "typescript",
+    "body": [
+      "import type { Cradle } from \"@fastify/awilix\";",
+      "",
+      "import { ${1:MODULE}_EVENTS } from \"./${2:module}.events.ts\";",
+      "import type { ${3:Entity}EventPayload } from \"./${2:module}.types.d.ts\";",
+      "",
+      "export default function ${2:module}EventHandlers({ eventBus, logger }: Cradle): void {",
+      "  eventBus.on(${1:MODULE}_EVENTS.CREATED, async (payload: ${3:Entity}EventPayload) => {",
+      "    logger.debug(\"[${2:module}] Event received: ${1:MODULE}_EVENTS.CREATED\");",
+      "    $0",
+      "  });",
+      "}"
+    ],
+    "description": "Event handler module"
+  },
+
+  "Error Throw": {
+    "prefix": "ethrow",
+    "scope": "typescript",
+    "body": [
+      "throw new ${1|ResourceNotFoundException,BadRequestException,ForbiddenException,ConflictException,UnauthorizedException|}(\"${2:message}\");"
+    ],
+    "description": "Throw domain exception"
+  },
+
+  "Event Emit": {
+    "prefix": "eemit",
+    "scope": "typescript",
+    "body": [
+      "await eventBus.emit(${1:MODULE}_EVENTS.${2:CREATED}, { ${3:entity}: ${4:data} });"
+    ],
+    "description": "Emit event"
+  },
+
+  "Drizzle Select": {
+    "prefix": "dselect",
+    "scope": "typescript",
+    "body": [
+      "const [result] = await db",
+      "  .select(${1:columns})",
+      "  .from(${2:table})",
+      "  .where(eq(${2:table}.${3:field}, ${4:value}));",
+      "",
+      "return result ?? null;"
+    ],
+    "description": "Drizzle select query"
+  },
+
+  "Drizzle Update": {
+    "prefix": "dupdate",
+    "scope": "typescript",
+    "body": [
+      "const [updated] = await db",
+      "  .update(${1:table})",
+      "  .set({ ...data, updatedAt: dateTimeService.now() })",
+      "  .where(eq(${1:table}.id, id))",
+      "  .returning(${2:columns});",
+      "",
+      "return updated;"
+    ],
+    "description": "Drizzle update query"
+  },
+
+  "Partial Function Export": {
+    "prefix": "partialfn",
+    "scope": "typescript",
+    "body": [
+      "${1:functionName}: partial(${1:functionName}, [deps]),"
+    ],
+    "description": "Partial function for DI export"
+  },
+
+  "Types Declaration": {
+    "prefix": "typesdecl",
+    "scope": "typescript",
+    "body": [
+      "import type { Static } from \"@sinclair/typebox\";",
+      "",
+      "import type {",
+      "  ${1:ENTITY}_CREATE_INPUT_CONTRACT,",
+      "  ${1:ENTITY}_OUTPUT_CONTRACT,",
+      "} from \"./${2:module}.contracts.ts\";",
+      "import type ${2:module}Mutations from \"./${2:module}.mutations.ts\";",
+      "import type ${2:module}Queries from \"./${2:module}.queries.ts\";",
+      "import type ${2:module}Repository from \"./${2:module}.repository.ts\";",
+      "",
+      "export type ${3:Entity} = Static<typeof ${1:ENTITY}_OUTPUT_CONTRACT>;",
+      "",
+      "export type ${3:Entity}CreateInput = Static<typeof ${1:ENTITY}_CREATE_INPUT_CONTRACT>;",
+      "",
+      "declare module \"@fastify/awilix\" {",
+      "  interface Cradle {",
+      "    ${2:module}Mutations: ReturnType<typeof ${2:module}Mutations>;",
+      "    ${2:module}Queries: ReturnType<typeof ${2:module}Queries>;",
+      "    ${2:module}Repository: ReturnType<typeof ${2:module}Repository>;",
+      "  }",
+      "}"
+    ],
+    "description": "Types declaration file"
+  }
+}

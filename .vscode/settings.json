@@ -25,7 +25,9 @@
   ],
   "eslint.validate": [
     "javascript",
-    "javascriptreact"
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
   ],
   "search.exclude": {
     "**/node_modules": true,
