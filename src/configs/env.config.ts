@@ -10,10 +10,8 @@ const TypeEnable = Type.Integer({
 export const CONFIG_SCHEMA = Type.Object(
   {
     ALLOWED_ORIGINS: Type.Optional(Type.String()),
-    APPLICATION_DOMAIN: Type.String(),
     APPLICATION_NAME: Type.String(),
     APPLICATION_URL: Type.String(),
-    COMPOSE_PROJECT_NAME: Type.String(),
     DATABASE_TIMEOUT: Type.Integer(),
     DATABASE_URL: Type.String(),
     ENABLE_COLORIZED_LOG: TypeEnable,
@@ -22,7 +20,6 @@ export const CONFIG_SCHEMA = Type.Object(
     ENABLE_DEVELOPER_MESSAGE: TypeEnable,
     ENABLE_PERSISTENCE_FORCE_LOGGING: TypeEnable,
     ENABLE_PRETTY_LOG: TypeEnable,
-    ENABLE_REQUEST_LOGGING: TypeEnable,
     ENABLE_RESPONSE_LOGGING_BODY: TypeEnable,
     ENABLE_SEEDS: TypeEnable,
     ENCRYPTION_KEY: Type.String({ minLength: 32 }),
