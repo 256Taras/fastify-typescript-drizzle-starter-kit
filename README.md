@@ -178,12 +178,11 @@ pnpm start:dev
 
 ```bash
 # Development
-pnpm start:dev           # Run with pretty logs
-pnpm start:dev:watch     # Hot reload
+pnpm dev                 # Run with watch + pretty logs
 
 # Database
-pnpm database:push       # Push schema
-pnpm database:studio     # Visual browser
+pnpm db:push             # Push schema
+pnpm db:studio           # Visual browser
 
 # Quality
 pnpm check:types         # TypeScript
@@ -191,15 +190,15 @@ pnpm lint                # ESLint
 pnpm test                # Tests
 
 # Docker
-pnpm docker:infra:up     # PostgreSQL
-pnpm docker:monitoring:up # Observability stack
+pnpm dc:infra            # PostgreSQL
+pnpm dc:monitoring       # Observability stack
 ```
 
 ---
 
 ## 🛠️ Developer Experience
 
-- **Code generators** — `pnpm generate:module`
+- **Code generators** — `pnpm generate`
 - **IDE snippets** — VS Code snippets included
 - **Hot reload** — `node --watch`
 - **Drizzle Studio** — visual database browser

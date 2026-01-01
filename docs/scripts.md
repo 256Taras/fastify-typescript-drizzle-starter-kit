@@ -1,54 +1,77 @@
-# Project Scripts 📜
+# Project Scripts
 
-Here's a breakdown of all the npm scripts available in this project, each designed to facilitate specific development, testing, and operational tasks:
+Available npm scripts for development, testing, and operations.
 
-## 🚀 Running the Application
+## Running the Application
 
-- **`start`**: `node src/index.js` - Starts the production version of the application.
-- **`start:dev`**: `node src/index.js | pino-pretty --ignore serviceContext` - Starts the application in development mode with pretty logging.
-- **`start:dev:watch`**: `node --watch src/index.js | pino-pretty --ignore serviceContext` - Starts the application in development mode with live reloading.
+| Script | Command | Description |
+|--------|---------|-------------|
+| `start` | `node src/index.ts` | Start production server |
+| `dev` | `node --watch src/index.ts \| pino-pretty` | Start dev server with watch + pretty logs |
 
-## 🐳 Docker Management
+## Docker
 
-- **`docker:dev:up`**: Starts all Docker containers for development using `docker-compose`.
-- **`docker:dev:down`**: Stops all Docker containers for development.
-- **`docker:infra:up`**: Starts the infrastructure Docker containers.
-- **`docker:infra:down`**: Stops the infrastructure Docker containers.
+| Script | Description |
+|--------|-------------|
+| `dc:infra` | Start PostgreSQL only |
+| `dc:infra:down` | Stop PostgreSQL |
+| `dc:dev` | Start full dev environment |
+| `dc:dev:down` | Stop dev environment |
+| `dc:monitoring` | Start monitoring stack (Prometheus, Grafana, Loki) |
+| `dc:monitoring:down` | Stop monitoring stack |
 
-## 🗄️ Database Operations with Drizzle ORM
+## Database (Drizzle ORM)
 
-- **`database:generate`**: Generates new database migrations based on the current Drizzle schema.
-- **`database:push`**: Applies the schema changes directly to the database.
-- **`database:studio`**: Launches Drizzle Studio on port 3000 for database management.
-- **`database:check`**: Checks for migration consistency and potential conflicts.
-- **`database:drop`**: Removes all migration files from the specified directory.
-- **`database:up`**: Updates the Drizzle metadata to the latest version.
-- **`database:introspect`**: Generates a TypeScript schema file from the current database state.
+| Script | Description |
+|--------|-------------|
+| `db:generate` | Generate migrations from schema |
+| `db:push` | Push schema changes to database |
+| `db:push:test` | Push schema to test database (force) |
+| `db:migrate` | Run pending migrations |
+| `db:seed` | Seed database |
+| `db:seed:dev` | Seed development data |
+| `db:seed:test` | Seed test data |
+| `db:reset` | Drop + push + migrate + seed (full reset) |
+| `db:studio` | Open Drizzle Studio (port 3000) |
+| `db:check` | Check migration consistency |
+| `db:drop` | Drop all migrations |
+| `db:up` | Update Drizzle metadata |
+| `db:introspect` | Generate schema from existing database |
 
-## 🧹 Code Quality and Formatting
+## Code Quality
 
-- **`lint`**: Runs ESLint to identify and report on patterns found in ECMAScript/JavaScript code.
-- **`lint:fix`**: Automatically fixes linting errors.
-- **`prettier:fix`**: Formats the code to ensure consistent style.
+| Script | Description |
+|--------|-------------|
+| `lint` | Run ESLint |
+| `lint:fix` | Fix ESLint errors |
+| `prettier:fix` | Format code with Prettier |
+| `check:types` | TypeScript type check |
+| `check:types:watch` | TypeScript type check (watch mode) |
+| `check:env` | Validate environment variables |
+| `check:dep` | Check for unused/missing dependencies |
+| `deps:validate` | Validate dependency graph |
+| `check` | Run types + lint |
 
-## 🪝 Git Hooks
+## Testing
 
-- **`prepare`**: Installs Git hooks with Husky.
-- **`precommit`**: Runs linting and tests before each commit.
-- **`prepush`**: Runs linting and tests before each push.
+| Script | Description |
+|--------|-------------|
+| `test` | Run all tests with coverage (c8) |
+| `test:unit` | Run unit tests only |
+| `test:integration` | Run integration tests only |
+| `test:e2e` | Run e2e tests only |
 
-## 🔍 Checks and Balances
+## Git Hooks
 
-- **`check:types`**: Runs TypeScript to check for type errors.
-- **`check:env`**: Validates that all required environment variables are set.
-- **`check:dep`**: Checks for unused or missing dependencies.
+| Script | Description |
+|--------|-------------|
+| `prepare` | Install Husky hooks |
+| `precommit` | Run lint-staged before commit |
+| `prepush` | Run lint before push |
+| `git:amend` | Stage all + amend last commit |
 
-## 🚧 Continuous Integration
+## Other
 
-- **`ci`**: Runs a comprehensive series of commands for linting, formatting, and testing the codebase.
-
-## 🛠️ Miscellaneous
-
-- **`generate:module`**: Scaffolds a new module using configured templates.
-
-Feel free to run these scripts directly with `pnpm <script-name>` or `pnpm <script-name>` to streamline your development workflows and ensure high standards of code hygiene and deployment readiness! 🌟
+| Script | Description |
+|--------|-------------|
+| `generate` | Scaffold new module (plop) |

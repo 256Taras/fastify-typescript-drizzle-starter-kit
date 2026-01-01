@@ -486,18 +486,17 @@ describe("GET /v1/users", () => {
 
 ### Database Commands
 ```bash
-pnpm database:generate   # Generate migrations
-pnpm database:push       # Push schema changes
-pnpm database:migrate    # Run migrations
-pnpm database:seed:dev   # Seed development data
-pnpm database:studio     # Open Drizzle Studio
+pnpm db:generate         # Generate migrations
+pnpm db:push             # Push schema changes
+pnpm db:migrate          # Run migrations
+pnpm db:seed:dev         # Seed development data
+pnpm db:studio           # Open Drizzle Studio
 ```
 
 ### Running the App
 ```bash
-pnpm docker:infra:up     # Start PostgreSQL
-pnpm start:dev           # Run with pretty logs
-pnpm start:dev:watch     # Run with hot reload
+pnpm dc:infra            # Start PostgreSQL
+pnpm dev                 # Run with watch + pretty logs
 ```
 
 ### Code Quality
@@ -511,9 +510,9 @@ pnpm test                # Run tests
 
 ### Docker Commands
 ```bash
-pnpm docker:infra:up         # Start PostgreSQL only
-pnpm docker:dev:up           # Start full dev environment
-pnpm docker:monitoring:up    # Start monitoring stack (Prometheus, Grafana, Loki)
+pnpm dc:infra            # Start PostgreSQL only
+pnpm dc:dev              # Start full dev environment
+pnpm dc:monitoring       # Start monitoring stack (Prometheus, Grafana, Loki)
 ```
 
 ## ➕ When Adding New Features

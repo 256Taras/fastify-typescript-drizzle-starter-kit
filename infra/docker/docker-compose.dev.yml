@@ -4,7 +4,7 @@ services:
     build:
       context: ../../
       dockerfile: ./infra/docker/Dockerfile
-    command: pnpm start:dev:watch
+    command: pnpm dev
     ports:
       - "8000:8000"
       - "9229:9229"
