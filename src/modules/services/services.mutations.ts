@@ -3,7 +3,7 @@ import type { UUID } from "node:crypto";
 import type { Cradle } from "@fastify/awilix";
 import { partial } from "rambda";
 
-import { canUserEditService } from "./services.domain.ts";
+import { canUserCreateServiceForProvider, canUserEditService } from "./services.domain.ts";
 import { SERVICE_EVENTS } from "./services.events.ts";
 import type { Service, ServiceCreateInput, ServiceUpdateInput } from "./services.types.d.ts";
 
@@ -23,7 +23,7 @@ const createService = async (
     throw new ResourceNotFoundException(`Provider with id: ${providerId} not found`);
   }
 
-  if (provider.userId !== userId) {
+  if (!canUserCreateServiceForProvider(provider, userId)) {
     throw new ForbiddenException("You can only create services for your own provider profile");
   }
 

@@ -4,6 +4,7 @@ import type { Cradle } from "@fastify/awilix";
 import { partial } from "rambda";
 
 import type { User, UserCreateInput, UserUpdateInput } from "./users.contracts.ts";
+import { isEmailTakenByOtherUser } from "./users.domain.ts";
 import { USER_EVENTS } from "./users.events.ts";
 
 import { ConflictException, ResourceNotFoundException } from "#libs/errors/domain.errors.ts";
@@ -41,7 +42,7 @@ const updateUser = async (
 
   if (input.email) {
     const existingUser = await usersRepository.findOneByEmail(input.email);
-    if (existingUser && existingUser.id !== userId) {
+    if (isEmailTakenByOtherUser(existingUser, userId)) {
       throw new ConflictException(`User with email: ${input.email} already exists`);
     }
   }

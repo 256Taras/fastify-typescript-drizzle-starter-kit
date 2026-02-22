@@ -4,7 +4,7 @@ import type { Cradle } from "@fastify/awilix";
 import { partial } from "rambda";
 
 import { PAYMENT_STATUS } from "./payments.constants.ts";
-import { canPayBooking } from "./payments.domain.ts";
+import { canPayBooking, hasExistingPayment } from "./payments.domain.ts";
 import { PAYMENT_EVENTS } from "./payments.events.ts";
 import type { Payment } from "./payments.types.d.ts";
 
@@ -45,7 +45,7 @@ const payBooking = async (
 
   let payment: Payment;
 
-  if (existingPayment) {
+  if (hasExistingPayment(existingPayment)) {
     const updated = await paymentsRepository.updateOneById(existingPayment.id, {
       status: PAYMENT_STATUS.paid,
       paidAt,

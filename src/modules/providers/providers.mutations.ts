@@ -3,7 +3,7 @@ import type { UUID } from "node:crypto";
 import type { Cradle } from "@fastify/awilix";
 import { partial } from "rambda";
 
-import { canUserManageProvider } from "./providers.domain.ts";
+import { canUserManageProvider, hasExistingProviderProfile } from "./providers.domain.ts";
 import { PROVIDER_EVENTS } from "./providers.events.ts";
 import type { Provider, ProviderCreateInput, ProviderUpdateInput } from "./providers.types.d.ts";
 
@@ -18,7 +18,7 @@ const createProvider = async (
   logger.debug(`[ProvidersMutations] Creating provider for user: ${userId}`);
 
   const existingProvider = await providersRepository.findOneByUserId(userId);
-  if (existingProvider) {
+  if (hasExistingProviderProfile(existingProvider)) {
     throw new ConflictException("User already has a provider profile");
   }
 

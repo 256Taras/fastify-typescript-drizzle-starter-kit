@@ -5,10 +5,12 @@ import type {
   ChangePasswordInput,
   Credentials,
   ForgotPasswordInput,
+  ForgotPasswordOutput,
   ResetPasswordInput,
   SignInInput,
   SignUpInput,
 } from "./auth.contracts.ts";
+import { buildForgotPasswordResponse, isResetTokenValid } from "./auth.domain.ts";
 import { AUTH_EVENTS } from "./auth.events.ts";
 
 import { APP_CONFIG } from "#configs/index.ts";
@@ -144,7 +146,7 @@ const forgotUserPassword = async (
     usersRepository,
   }: Cradle,
   input: ForgotPasswordInput,
-): Promise<{ resetToken: string; status: boolean } | typeof STATUS_SUCCESS> => {
+): Promise<ForgotPasswordOutput> => {
   logger.debug(`[AuthMutations] Password reset requested for email: ${input.email}`);
 
   const user = await usersRepository.findOneByEmail(input.email);
@@ -168,11 +170,7 @@ const forgotUserPassword = async (
 
   logger.info(`[AuthMutations] Password reset email sent to: ${input.email}`);
 
-  if (configs.APP_CONFIG.isTest) {
-    return { status: true, resetToken };
-  }
-
-  return STATUS_SUCCESS;
+  return buildForgotPasswordResponse(configs.APP_CONFIG.isTest, resetToken);
 };
 
 const resetUserPassword = async (
@@ -187,7 +185,7 @@ const resetUserPassword = async (
     throw new UnauthorizedException("Invalid or already used reset token");
   }
 
-  if (dateTimeService.isPast(resetTokenRecord.expiresAt)) {
+  if (!isResetTokenValid(resetTokenRecord, dateTimeService.nowDate())) {
     throw new UnauthorizedException("Reset token has expired");
   }
 

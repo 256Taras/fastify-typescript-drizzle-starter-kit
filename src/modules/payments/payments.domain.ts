@@ -9,3 +9,7 @@ export const canPayBooking = (booking: Booking, existingPayment: Payment | undef
   const noExistingPaidPayment = !existingPayment || existingPayment.status !== PAYMENT_STATUS.paid;
   return validBookingStatus && noExistingPaidPayment;
 };
+
+export const hasExistingPayment = (payment: Payment | undefined): payment is Payment => {
+  return payment !== undefined;
+};
