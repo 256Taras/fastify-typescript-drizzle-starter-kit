@@ -9,15 +9,19 @@ import type { Service, ServicesListResponse } from "./services.types.d.ts";
 
 import { ResourceNotFoundException } from "#libs/errors/domain.errors.ts";
 import type { PaginationParams } from "#libs/pagination/pagination.types.d.ts";
-import { services } from "#modules/services/services.model.ts";
+import { SERVICE_PUBLIC_COLUMNS, services } from "#modules/services/services.model.ts";
 
-const findOneById = async ({ servicesRepository, logger }: Cradle, serviceId: UUID): Promise<Service> => {
+const findOneById = async ({ db, logger }: Cradle, serviceId: UUID): Promise<Service> => {
   logger.debug(`[ServicesQueries] Getting service: ${serviceId}`);
 
-  const service = await servicesRepository.findOneById(serviceId);
+  const [service] = await db
+    .select(SERVICE_PUBLIC_COLUMNS)
+    .from(services)
+    .where(and(eq(services.id, serviceId), isNull(services.deletedAt), eq(services.status, "active")));
+
   if (!service) throw new ResourceNotFoundException(`Service with id: ${serviceId} not found`);
 
-  return service;
+  return service as Service;
 };
 
 const findMany = async (

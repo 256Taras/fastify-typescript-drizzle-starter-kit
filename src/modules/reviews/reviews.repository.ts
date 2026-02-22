@@ -12,7 +12,7 @@ import { REVIEW_PUBLIC_COLUMNS, reviews } from "#modules/reviews/reviews.model.t
 const findOneByBookingId = async ({ db }: Cradle, bookingId: UUID): Promise<Review | undefined> => {
   const [review] = await db.select(REVIEW_PUBLIC_COLUMNS).from(reviews).where(eq(reviews.bookingId, bookingId));
 
-  return review as Review | undefined;
+  return review;
 };
 
 const getServiceStats = async ({ db }: Cradle, serviceId: UUID): Promise<{ avgRating: number; reviewsCount: number }> => {

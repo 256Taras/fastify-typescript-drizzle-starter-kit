@@ -15,7 +15,7 @@ const findOneByUserId = async ({ db }: Cradle, userId: UUID): Promise<Provider |
     .from(providers)
     .where(and(eq(providers.userId, userId), isNull(providers.deletedAt)));
 
-  return maybeProvider as Provider | undefined;
+  return maybeProvider;
 };
 
 const updateOneById = async (
@@ -29,7 +29,7 @@ const updateOneById = async (
     .where(and(eq(providers.id, id), isNull(providers.deletedAt)))
     .returning(PROVIDER_PUBLIC_COLUMNS);
 
-  return updated as Provider | undefined;
+  return updated;
 };
 
 const updateRating = async (
@@ -44,7 +44,7 @@ const updateRating = async (
     .where(and(eq(providers.id, id), isNull(providers.deletedAt)))
     .returning(PROVIDER_PUBLIC_COLUMNS);
 
-  return updated as Provider | undefined;
+  return updated;
 };
 
 export default function providersRepository(deps: Cradle) {

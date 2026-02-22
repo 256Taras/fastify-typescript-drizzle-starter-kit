@@ -7,7 +7,12 @@ import { canUserManageProvider, hasExistingProviderProfile } from "./providers.d
 import { PROVIDER_EVENTS } from "./providers.events.ts";
 import type { Provider, ProviderCreateInput, ProviderUpdateInput } from "./providers.types.d.ts";
 
-import { ConflictException, ForbiddenException, ResourceNotFoundException } from "#libs/errors/domain.errors.ts";
+import {
+  ConflictException,
+  ForbiddenException,
+  ResourceNotFoundException,
+  UnauthorizedException,
+} from "#libs/errors/domain.errors.ts";
 
 const createProvider = async (
   { providersRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
@@ -16,6 +21,11 @@ const createProvider = async (
   const { userId } = sessionStorageService.getUser();
 
   logger.debug(`[ProvidersMutations] Creating provider for user: ${userId}`);
+
+  const user = await usersRepository.findOneById(userId);
+  if (!user) {
+    throw new UnauthorizedException("Authenticated user not found");
+  }
 
   const existingProvider = await providersRepository.findOneByUserId(userId);
   if (hasExistingProviderProfile(existingProvider)) {
@@ -27,10 +37,7 @@ const createProvider = async (
     userId,
   });
 
-  const user = await usersRepository.findOneById(userId);
-  if (user) {
-    await eventBus.emit(PROVIDER_EVENTS.CREATED, { provider: newProvider, user });
-  }
+  await eventBus.emit(PROVIDER_EVENTS.CREATED, { provider: newProvider, user });
 
   logger.info(`[ProvidersMutations] Provider created: ${newProvider.id}`);
 
@@ -46,6 +53,11 @@ const updateProvider = async (
 
   logger.debug(`[ProvidersMutations] Updating provider: ${providerId}`);
 
+  const user = await usersRepository.findOneById(userId);
+  if (!user) {
+    throw new UnauthorizedException("Authenticated user not found");
+  }
+
   const existingProvider = await providersRepository.findOneById(providerId);
   if (!existingProvider) {
     throw new ResourceNotFoundException(`Provider with id: ${providerId} not found`);
@@ -60,10 +72,7 @@ const updateProvider = async (
     throw new ResourceNotFoundException(`Provider with id: ${providerId} not found`);
   }
 
-  const user = await usersRepository.findOneById(userId);
-  if (user) {
-    await eventBus.emit(PROVIDER_EVENTS.UPDATED, { provider: updatedProvider, user });
-  }
+  await eventBus.emit(PROVIDER_EVENTS.UPDATED, { provider: updatedProvider, user });
 
   logger.info(`[ProvidersMutations] Provider updated: ${providerId}`);
 
@@ -77,6 +86,11 @@ const deleteProvider = async (
   const { userId } = sessionStorageService.getUser();
 
   logger.debug(`[ProvidersMutations] Deleting provider: ${providerId}`);
+
+  const user = await usersRepository.findOneById(userId);
+  if (!user) {
+    throw new UnauthorizedException("Authenticated user not found");
+  }
 
   const existingProvider = await providersRepository.findOneById(providerId);
   if (!existingProvider) {
@@ -92,10 +106,7 @@ const deleteProvider = async (
     throw new ResourceNotFoundException(`Provider with id: ${providerId} not found`);
   }
 
-  const user = await usersRepository.findOneById(userId);
-  if (user) {
-    await eventBus.emit(PROVIDER_EVENTS.DELETED, { provider: deletedProvider, user });
-  }
+  await eventBus.emit(PROVIDER_EVENTS.DELETED, { provider: deletedProvider, user });
 
   logger.info(`[ProvidersMutations] Provider deleted: ${providerId}`);
 

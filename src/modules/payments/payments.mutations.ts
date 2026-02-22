@@ -8,7 +8,7 @@ import { canPayBooking, hasExistingPayment } from "./payments.domain.ts";
 import { PAYMENT_EVENTS } from "./payments.events.ts";
 import type { Payment } from "./payments.types.d.ts";
 
-import { BadRequestException, ResourceNotFoundException } from "#libs/errors/domain.errors.ts";
+import { BadRequestException, ResourceNotFoundException, UnauthorizedException } from "#libs/errors/domain.errors.ts";
 
 const payBooking = async (
   {
@@ -23,6 +23,11 @@ const payBooking = async (
   bookingId: UUID,
 ): Promise<Payment> => {
   const { userId } = sessionStorageService.getUser();
+
+  const user = await usersRepository.findOneById(userId);
+  if (!user) {
+    throw new UnauthorizedException("Authenticated user not found");
+  }
 
   logger.debug(`[PaymentsMutations] Processing payment for booking: ${bookingId}`);
 
@@ -63,10 +68,7 @@ const payBooking = async (
     });
   }
 
-  const user = await usersRepository.findOneById(userId);
-  if (user) {
-    await eventBus.emit(PAYMENT_EVENTS.PAID, { payment, user });
-  }
+  await eventBus.emit(PAYMENT_EVENTS.PAID, { payment, user });
 
   logger.info(`[PaymentsMutations] Payment processed: ${payment.id}`);
 

@@ -15,7 +15,7 @@ const findManyByProviderId = async ({ db }: Cradle, providerId: UUID): Promise<S
   return db
     .select(SERVICE_PUBLIC_COLUMNS)
     .from(services)
-    .where(and(eq(services.providerId, providerId), isNull(services.deletedAt))) as Promise<Service[]>;
+    .where(and(eq(services.providerId, providerId), isNull(services.deletedAt)));
 };
 
 const updateOneById = async (
@@ -29,7 +29,7 @@ const updateOneById = async (
     .where(and(eq(services.id, id), isNull(services.deletedAt)))
     .returning(SERVICE_PUBLIC_COLUMNS);
 
-  return updated as Service | undefined;
+  return updated;
 };
 
 export default function servicesRepository(deps: Cradle) {

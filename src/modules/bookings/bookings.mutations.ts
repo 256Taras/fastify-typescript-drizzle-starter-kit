@@ -21,6 +21,7 @@ import {
   ConflictException,
   ForbiddenException,
   ResourceNotFoundException,
+  UnauthorizedException,
 } from "#libs/errors/domain.errors.ts";
 import { BOOKING_STATUS } from "#modules/bookings/bookings.constants.ts";
 
@@ -38,6 +39,11 @@ const createBooking = async (deps: Cradle, input: BookingCreateInput): Promise<B
   } = deps;
 
   const { userId } = sessionStorageService.getUser();
+
+  const user = await usersRepository.findOneById(userId);
+  if (!user) {
+    throw new UnauthorizedException("Authenticated user not found");
+  }
 
   logger.debug(`[BookingsMutations] Creating booking for service: ${input.serviceId}`);
 
@@ -81,10 +87,7 @@ const createBooking = async (deps: Cradle, input: BookingCreateInput): Promise<B
     });
   });
 
-  const user = await usersRepository.findOneById(userId);
-  if (user) {
-    await eventBus.emit(BOOKING_EVENTS.CREATED, { booking: newBooking, user });
-  }
+  await eventBus.emit(BOOKING_EVENTS.CREATED, { booking: newBooking, user });
 
   logger.info(`[BookingsMutations] Booking created: ${newBooking.id}`);
 
@@ -97,6 +100,11 @@ const cancelBooking = async (
   input: BookingCancelInput,
 ): Promise<Booking> => {
   const { userId } = sessionStorageService.getUser();
+
+  const user = await usersRepository.findOneById(userId);
+  if (!user) {
+    throw new UnauthorizedException("Authenticated user not found");
+  }
 
   logger.debug(`[BookingsMutations] Cancelling booking: ${bookingId}`);
 
@@ -122,10 +130,7 @@ const cancelBooking = async (
     throw new ResourceNotFoundException(`Booking with id: ${bookingId} not found`);
   }
 
-  const user = await usersRepository.findOneById(userId);
-  if (user) {
-    await eventBus.emit(BOOKING_EVENTS.CANCELLED, { booking: updatedBooking, user });
-  }
+  await eventBus.emit(BOOKING_EVENTS.CANCELLED, { booking: updatedBooking, user });
 
   logger.info(`[BookingsMutations] Booking cancelled: ${bookingId}, fee: ${cancellationFee}`);
 
@@ -137,6 +142,11 @@ const confirmBooking = async (
   bookingId: UUID,
 ): Promise<Booking> => {
   const { userId: providerUserId } = sessionStorageService.getUser();
+
+  const user = await usersRepository.findOneById(providerUserId);
+  if (!user) {
+    throw new UnauthorizedException("Authenticated user not found");
+  }
 
   logger.debug(`[BookingsMutations] Confirming booking: ${bookingId}`);
 
@@ -156,10 +166,7 @@ const confirmBooking = async (
     throw new ResourceNotFoundException(`Booking with id: ${bookingId} not found`);
   }
 
-  const user = await usersRepository.findOneById(providerUserId);
-  if (user) {
-    await eventBus.emit(BOOKING_EVENTS.CONFIRMED, { booking: updatedBooking, user });
-  }
+  await eventBus.emit(BOOKING_EVENTS.CONFIRMED, { booking: updatedBooking, user });
 
   logger.info(`[BookingsMutations] Booking confirmed: ${bookingId}`);
 
@@ -171,6 +178,11 @@ const completeBooking = async (
   bookingId: UUID,
 ): Promise<Booking> => {
   const { userId: providerUserId } = sessionStorageService.getUser();
+
+  const user = await usersRepository.findOneById(providerUserId);
+  if (!user) {
+    throw new UnauthorizedException("Authenticated user not found");
+  }
 
   logger.debug(`[BookingsMutations] Completing booking: ${bookingId}`);
 
@@ -190,10 +202,7 @@ const completeBooking = async (
     throw new ResourceNotFoundException(`Booking with id: ${bookingId} not found`);
   }
 
-  const user = await usersRepository.findOneById(providerUserId);
-  if (user) {
-    await eventBus.emit(BOOKING_EVENTS.COMPLETED, { booking: updatedBooking, user });
-  }
+  await eventBus.emit(BOOKING_EVENTS.COMPLETED, { booking: updatedBooking, user });
 
   logger.info(`[BookingsMutations] Booking completed: ${bookingId}`);
 

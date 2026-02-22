@@ -7,7 +7,12 @@ import { canLeaveReview } from "./reviews.domain.ts";
 import { REVIEW_EVENTS } from "./reviews.events.ts";
 import type { Review, ReviewCreateInput } from "./reviews.types.d.ts";
 
-import { ConflictException, ForbiddenException, ResourceNotFoundException } from "#libs/errors/domain.errors.ts";
+import {
+  ConflictException,
+  ForbiddenException,
+  ResourceNotFoundException,
+  UnauthorizedException,
+} from "#libs/errors/domain.errors.ts";
 
 const createReview = async (
   {
@@ -26,6 +31,11 @@ const createReview = async (
   const { userId } = sessionStorageService.getUser();
 
   logger.debug(`[ReviewsMutations] Creating review for booking: ${bookingId}`);
+
+  const user = await usersRepository.findOneById(userId);
+  if (!user) {
+    throw new UnauthorizedException("Authenticated user not found");
+  }
 
   const booking = await bookingsRepository.findOneById(bookingId);
   if (!booking) {
@@ -56,10 +66,7 @@ const createReview = async (
     await providersRepository.updateRating(service.providerId, stats.avgRating.toFixed(1), stats.reviewsCount);
   }
 
-  const user = await usersRepository.findOneById(userId);
-  if (user) {
-    await eventBus.emit(REVIEW_EVENTS.CREATED, { review: newReview, user });
-  }
+  await eventBus.emit(REVIEW_EVENTS.CREATED, { review: newReview, user });
 
   logger.info(`[ReviewsMutations] Review created: ${newReview.id}`);
 

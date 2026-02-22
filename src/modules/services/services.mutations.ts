@@ -7,7 +7,7 @@ import { canUserCreateServiceForProvider, canUserEditService } from "./services.
 import { SERVICE_EVENTS } from "./services.events.ts";
 import type { Service, ServiceCreateInput, ServiceUpdateInput } from "./services.types.d.ts";
 
-import { ForbiddenException, ResourceNotFoundException } from "#libs/errors/domain.errors.ts";
+import { ForbiddenException, ResourceNotFoundException, UnauthorizedException } from "#libs/errors/domain.errors.ts";
 
 const createService = async (
   { servicesRepository, providersRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
@@ -17,6 +17,11 @@ const createService = async (
   const { userId } = sessionStorageService.getUser();
 
   logger.debug(`[ServicesMutations] Creating service for provider: ${providerId}`);
+
+  const user = await usersRepository.findOneById(userId);
+  if (!user) {
+    throw new UnauthorizedException("Authenticated user not found");
+  }
 
   const provider = await providersRepository.findOneById(providerId);
   if (!provider) {
@@ -32,10 +37,7 @@ const createService = async (
     providerId,
   });
 
-  const user = await usersRepository.findOneById(userId);
-  if (user) {
-    await eventBus.emit(SERVICE_EVENTS.CREATED, { service: newService, user });
-  }
+  await eventBus.emit(SERVICE_EVENTS.CREATED, { service: newService, user });
 
   logger.info(`[ServicesMutations] Service created: ${newService.id}`);
 
@@ -50,6 +52,11 @@ const updateService = async (
   const { userId } = sessionStorageService.getUser();
 
   logger.debug(`[ServicesMutations] Updating service: ${serviceId}`);
+
+  const user = await usersRepository.findOneById(userId);
+  if (!user) {
+    throw new UnauthorizedException("Authenticated user not found");
+  }
 
   const service = await servicesRepository.findOneById(serviceId);
   if (!service) {
@@ -70,10 +77,7 @@ const updateService = async (
     throw new ResourceNotFoundException(`Service with id: ${serviceId} not found`);
   }
 
-  const user = await usersRepository.findOneById(userId);
-  if (user) {
-    await eventBus.emit(SERVICE_EVENTS.UPDATED, { service: updatedService, user });
-  }
+  await eventBus.emit(SERVICE_EVENTS.UPDATED, { service: updatedService, user });
 
   logger.info(`[ServicesMutations] Service updated: ${serviceId}`);
 
@@ -87,6 +91,11 @@ const deleteService = async (
   const { userId } = sessionStorageService.getUser();
 
   logger.debug(`[ServicesMutations] Deleting service: ${serviceId}`);
+
+  const user = await usersRepository.findOneById(userId);
+  if (!user) {
+    throw new UnauthorizedException("Authenticated user not found");
+  }
 
   const service = await servicesRepository.findOneById(serviceId);
   if (!service) {
@@ -107,10 +116,7 @@ const deleteService = async (
     throw new ResourceNotFoundException(`Service with id: ${serviceId} not found`);
   }
 
-  const user = await usersRepository.findOneById(userId);
-  if (user) {
-    await eventBus.emit(SERVICE_EVENTS.DELETED, { service: deletedService, user });
-  }
+  await eventBus.emit(SERVICE_EVENTS.DELETED, { service: deletedService, user });
 
   logger.info(`[ServicesMutations] Service deleted: ${serviceId}`);
 

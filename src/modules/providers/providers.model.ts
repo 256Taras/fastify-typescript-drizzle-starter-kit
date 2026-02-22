@@ -15,7 +15,6 @@ export const providers = pgTable(
     userId: uuid("user_id")
       .$type<UUID>()
       .notNull()
-      .unique()
       .references(() => users.id),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description"),

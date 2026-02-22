@@ -7,7 +7,7 @@ export const isResetTokenValid = (token: { expiresAt: Date } | undefined, curren
     return false;
   }
 
-  return currentDate <= token.expiresAt;
+  return currentDate < token.expiresAt;
 };
 
 export const buildForgotPasswordResponse = (isTestMode: boolean, resetToken: string): ForgotPasswordOutput => {

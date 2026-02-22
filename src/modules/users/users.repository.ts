@@ -18,7 +18,7 @@ const findOneByEmail = async ({ db }: Cradle, email: string): Promise<undefined 
     .from(users)
     .where(and(eq(users.email, email), isNull(users.deletedAt)));
 
-  return maybeUser as undefined | User;
+  return maybeUser;
 };
 
 const findOneByEmailWithPassword = async ({ db }: Cradle, email: string): Promise<undefined | UserWithPassword> => {
@@ -27,7 +27,7 @@ const findOneByEmailWithPassword = async ({ db }: Cradle, email: string): Promis
     .from(users)
     .where(and(eq(users.email, email), isNull(users.deletedAt)));
 
-  return maybeUser as undefined | UserWithPassword;
+  return maybeUser;
 };
 
 const findOneByIdWithPassword = async ({ db }: Cradle, id: UUID): Promise<undefined | UserWithPassword> => {
@@ -36,7 +36,7 @@ const findOneByIdWithPassword = async ({ db }: Cradle, id: UUID): Promise<undefi
     .from(users)
     .where(and(eq(users.id, id), isNull(users.deletedAt)));
 
-  return maybeUser as undefined | UserWithPassword;
+  return maybeUser;
 };
 
 const updateOnePasswordById = async (
@@ -50,7 +50,7 @@ const updateOnePasswordById = async (
     .where(and(eq(users.id, id), isNull(users.deletedAt)))
     .returning(NON_PASSWORD_COLUMNS);
 
-  return updatedUser as undefined | User;
+  return updatedUser;
 };
 
 const updateOneById = async (
@@ -64,7 +64,7 @@ const updateOneById = async (
     .where(and(eq(users.id, id), isNull(users.deletedAt)))
     .returning(NON_PASSWORD_COLUMNS);
 
-  return updatedUser as undefined | User;
+  return updatedUser;
 };
 
 export default function usersRepository(deps: Cradle) {
