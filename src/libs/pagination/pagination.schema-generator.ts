@@ -610,21 +610,39 @@ export const generatePaginatedResponseSchema = <TTable, TStrategy extends Pagina
   );
 };
 
-type GeneratePaginatedRouteSchemaOptions<TTable, TStrategy extends PaginationStrategy = "offset"> = {
+type GeneratePaginatedRouteSchemaOptions<
+  TTable,
+  TStrategy extends PaginationStrategy = "offset",
+  TParams extends TSchema | undefined = undefined,
+> = {
   bodySchema?: TSchema;
   config: PaginationConfig<TTable, TStrategy>;
   description?: string;
   errorSchemas?: Record<number, TSchema>;
-  paramsSchema?: TSchema;
-  security?: Record<string, unknown>[];
+  paramsSchema?: TParams;
+  security?: readonly Record<string, readonly string[]>[];
   summary?: string;
   tags?: string[];
 };
 
+type PaginatedRouteSchema<TParams extends TSchema | undefined = undefined> = {
+  body?: TSchema;
+  description?: string;
+  querystring: TObject;
+  response: Record<number, TSchema>;
+  security?: readonly Record<string, readonly string[]>[];
+  summary?: string;
+  tags?: string[];
+} & (TParams extends TSchema ? { params: TParams } : Record<string, never>);
+
 /**
  * Generates complete Fastify route schema with pagination
  */
-export const generatePaginatedRouteSchema = <TTable, TStrategy extends PaginationStrategy = "offset">({
+export const generatePaginatedRouteSchema = <
+  TTable,
+  TStrategy extends PaginationStrategy = "offset",
+  TParams extends TSchema | undefined = undefined,
+>({
   bodySchema,
   config,
   description,
@@ -633,7 +651,7 @@ export const generatePaginatedRouteSchema = <TTable, TStrategy extends Paginatio
   summary,
   tags,
   security,
-}: GeneratePaginatedRouteSchemaOptions<TTable, TStrategy>): Record<string, unknown> => {
+}: GeneratePaginatedRouteSchemaOptions<TTable, TStrategy, TParams>): PaginatedRouteSchema<TParams> => {
   validatePaginationConfig(config);
 
   const schema: Record<string, unknown> = {
@@ -646,11 +664,10 @@ export const generatePaginatedRouteSchema = <TTable, TStrategy extends Paginatio
 
   if (bodySchema) schema.body = bodySchema;
   if (paramsSchema) schema.params = paramsSchema;
-  // Fastify route schema allows description, summary, tags as metadata
   if (description) schema.description = description;
   if (summary) schema.summary = summary;
   if (tags) schema.tags = tags;
   if (security) schema.security = security;
 
-  return schema;
+  return schema as PaginatedRouteSchema<TParams>;
 };

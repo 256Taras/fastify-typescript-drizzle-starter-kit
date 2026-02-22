@@ -1,3 +1,5 @@
+import type { UUID } from "node:crypto";
+
 import type { Cradle } from "@fastify/awilix";
 import { desc, eq } from "drizzle-orm";
 import { partial } from "rambda";
@@ -10,7 +12,7 @@ const createOne = async ({ db }: Cradle, data: AuditLogCreateInput): Promise<Aud
   return created;
 };
 
-const findManyByUserId = async ({ db }: Cradle, userId: string, limit = 50): Promise<AuditLogRow[]> => {
+const findManyByUserId = async ({ db }: Cradle, userId: UUID, limit = 50): Promise<AuditLogRow[]> => {
   return db
     .select(AUDIT_LOG_COLUMNS)
     .from(auditLogs)
@@ -19,7 +21,7 @@ const findManyByUserId = async ({ db }: Cradle, userId: string, limit = 50): Pro
     .limit(limit);
 };
 
-const findManyByEntityId = async ({ db }: Cradle, entityId: string, limit = 50): Promise<AuditLogRow[]> => {
+const findManyByEntityId = async ({ db }: Cradle, entityId: UUID, limit = 50): Promise<AuditLogRow[]> => {
   return db
     .select(AUDIT_LOG_COLUMNS)
     .from(auditLogs)

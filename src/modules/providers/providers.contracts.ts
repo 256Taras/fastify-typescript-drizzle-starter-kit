@@ -3,10 +3,12 @@ import { createInsertSchema, createSelectSchema } from "drizzle-typebox";
 
 import { providers } from "./providers.model.ts";
 
-import { paginationSchema } from "#libs/utils/schemas.ts";
+import { paginationSchema, TypeUuid } from "#libs/utils/schemas.ts";
 
-export const PROVIDER_ENTITY_CONTRACT = createSelectSchema(providers);
-export const PROVIDER_INSERT_CONTRACT = createInsertSchema(providers);
+const uuidColumns = { id: TypeUuid(), userId: TypeUuid() };
+
+export const PROVIDER_ENTITY_CONTRACT = createSelectSchema(providers, uuidColumns);
+export const PROVIDER_INSERT_CONTRACT = createInsertSchema(providers, { userId: TypeUuid() });
 
 export const PROVIDER_OUTPUT_CONTRACT = Type.Omit(PROVIDER_ENTITY_CONTRACT, ["deletedAt"]);
 

@@ -1,3 +1,5 @@
+import type { UUID } from "node:crypto";
+
 import { BOOKING_STATUS } from "./bookings.contracts.ts";
 import type { Booking } from "./bookings.types.d.ts";
 
@@ -13,11 +15,11 @@ const MS_PER_HOUR = 1000 * 60 * 60;
 
 const MS_PER_MINUTE = 60 * 1000;
 
-export const canCreateBooking = (service: Service, userId: string, providerUserId: string): boolean => {
+export const canCreateBooking = (service: Service, userId: UUID, providerUserId: UUID): boolean => {
   return service.status === SERVICE_STATUS.active && providerUserId !== userId;
 };
 
-export const canCancelBooking = (booking: Booking, userId: string): boolean => {
+export const canCancelBooking = (booking: Booking, userId: UUID): boolean => {
   const isCancellable = booking.status === BOOKING_STATUS.pending || booking.status === BOOKING_STATUS.confirmed;
 
   const isOwner = booking.userId === userId;
@@ -25,14 +27,14 @@ export const canCancelBooking = (booking: Booking, userId: string): boolean => {
   return isCancellable && isOwner;
 };
 
-export const canConfirmBooking = (booking: Booking, providerUserId: string, serviceProviderUserId: string): boolean => {
+export const canConfirmBooking = (booking: Booking, providerUserId: UUID, serviceProviderUserId: UUID): boolean => {
   return booking.status === BOOKING_STATUS.pending && providerUserId === serviceProviderUserId;
 };
 
 export const canCompleteBooking = (
   booking: Booking,
-  providerUserId: string,
-  serviceProviderUserId: string,
+  providerUserId: UUID,
+  serviceProviderUserId: UUID,
   currentDate: Date,
 ): boolean => {
   const endAt = new Date(booking.endAt);

@@ -3,14 +3,16 @@ import { createSelectSchema } from "drizzle-typebox";
 
 import { auditLogs } from "./audits.model.ts";
 
-import { paginationSchema } from "#libs/utils/schemas.ts";
+import { paginationSchema, TypeUuid } from "#libs/utils/schemas.ts";
 
-export const AUDIT_LOG_ENTITY_CONTRACT = createSelectSchema(auditLogs);
+const uuidColumns = { id: TypeUuid(), userId: TypeUuid(), entityId: TypeUuid() };
+
+export const AUDIT_LOG_ENTITY_CONTRACT = createSelectSchema(auditLogs, uuidColumns);
 
 export const AUDIT_LOG_OUTPUT_CONTRACT = AUDIT_LOG_ENTITY_CONTRACT;
 
 export const AUDIT_LOG_CREATE_INPUT = Type.Object({
-  userId: Type.Optional(Type.String({ format: "uuid" })),
+  userId: Type.Optional(TypeUuid()),
   action: Type.Union([
     Type.Literal("create"),
     Type.Literal("update"),
@@ -27,7 +29,7 @@ export const AUDIT_LOG_CREATE_INPUT = Type.Object({
     Type.Literal("refund"),
   ]),
   entityType: Type.String({ minLength: 1, maxLength: 50 }),
-  entityId: Type.Optional(Type.String({ format: "uuid" })),
+  entityId: Type.Optional(TypeUuid()),
   metadata: Type.Optional(Type.Record(Type.String(), Type.Unknown())),
   ipAddress: Type.Optional(Type.String({ maxLength: 45 })),
   userAgent: Type.Optional(Type.String()),

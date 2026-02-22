@@ -3,9 +3,12 @@ import { createInsertSchema, createSelectSchema } from "drizzle-typebox";
 
 import { reviews } from "./reviews.model.ts";
 
-import { paginationSchema } from "#libs/utils/schemas.ts";
+import { paginationSchema, TypeUuid } from "#libs/utils/schemas.ts";
 
-export const REVIEW_ENTITY_CONTRACT = createSelectSchema(reviews);
+const uuidColumns = { id: TypeUuid(), bookingId: TypeUuid(), userId: TypeUuid(), serviceId: TypeUuid() };
+
+export const REVIEW_ENTITY_CONTRACT = createSelectSchema(reviews, uuidColumns);
+
 export const REVIEW_INSERT_CONTRACT = createInsertSchema(reviews);
 
 export const REVIEW_OUTPUT_CONTRACT = REVIEW_ENTITY_CONTRACT;

@@ -1,5 +1,3 @@
-import type { UUID } from "node:crypto";
-
 import type { Cradle } from "@fastify/awilix";
 import { partial } from "rambda";
 
@@ -201,7 +199,7 @@ const resetUserPassword = async (
 
   const hashedPassword = await encrypterService.getHash(input.password);
 
-  await usersRepository.updateOnePasswordById(user.id as UUID, hashedPassword);
+  await usersRepository.updateOnePasswordById(user.id, hashedPassword);
   await authPasswordResetTokenRepository.updateOneTokenAsUsed(resetTokenRecord.id);
 
   logger.info(`[AuthMutations] Password successfully reset for user: ${user.email}`);

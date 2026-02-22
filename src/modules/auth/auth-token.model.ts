@@ -12,6 +12,7 @@ export const authTokens = pgTable(
     id: uuid("id").$type<UUID>().primaryKey().notNull().defaultRandom(),
     ppid: text("ppid").notNull(),
     userId: uuid("user_id")
+      .$type<UUID>()
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
   },

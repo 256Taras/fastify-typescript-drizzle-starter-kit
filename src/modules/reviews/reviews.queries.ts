@@ -1,3 +1,5 @@
+import type { UUID } from "node:crypto";
+
 import type { Cradle } from "@fastify/awilix";
 import { eq } from "drizzle-orm";
 import { partial } from "rambda";
@@ -10,7 +12,7 @@ import { reviews } from "#modules/reviews/reviews.model.ts";
 
 const findManyByServiceId = async (
   { paginationService, logger }: Cradle,
-  serviceId: string,
+  serviceId: UUID,
   paginationParams: PaginationParams<"offset">,
 ): Promise<ReviewsListResponse> => {
   logger.debug(`[ReviewsQueries] Getting reviews for service: ${serviceId}`);

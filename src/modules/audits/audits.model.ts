@@ -14,10 +14,10 @@ export const auditLogs = pgTable(
   TABLE_NAMES.auditLogs,
   {
     id: uuid("id").$type<UUID>().primaryKey().notNull().defaultRandom(),
-    userId: uuid("user_id"),
+    userId: uuid("user_id").$type<UUID>(),
     action: auditActionEnum("action").notNull(),
     entityType: varchar("entity_type", { length: 50 }).notNull(),
-    entityId: uuid("entity_id"),
+    entityId: uuid("entity_id").$type<UUID>(),
     metadata: jsonb("metadata").$type<Record<string, unknown>>(),
     ipAddress: varchar("ip_address", { length: 45 }),
     userAgent: text("user_agent"),

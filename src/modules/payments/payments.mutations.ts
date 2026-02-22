@@ -46,7 +46,7 @@ const payBooking = async (
   let payment: Payment;
 
   if (existingPayment) {
-    const updated = await paymentsRepository.updateOneById(existingPayment.id as UUID, {
+    const updated = await paymentsRepository.updateOneById(existingPayment.id, {
       status: PAYMENT_STATUS.paid,
       paidAt,
     });

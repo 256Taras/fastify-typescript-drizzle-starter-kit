@@ -7,11 +7,18 @@ import type { Payment } from "./payments.types.d.ts";
 
 import { ResourceNotFoundException } from "#libs/errors/domain.errors.ts";
 
-const findOneById = async ({ paymentsRepository, logger }: Cradle, paymentId: string): Promise<Payment> => {
+const findOneById = async (
+  { paymentsRepository, sessionStorageService, logger }: Cradle,
+  paymentId: UUID,
+): Promise<Payment> => {
+  const { userId } = sessionStorageService.getUser();
+
   logger.debug(`[PaymentsQueries] Getting payment: ${paymentId}`);
 
-  const payment = await paymentsRepository.findOneById(paymentId);
-  if (!payment) throw new ResourceNotFoundException(`Payment with id: ${paymentId} not found`);
+  const payment = await paymentsRepository.findOneByIdForUser(paymentId, userId);
+  if (!payment) {
+    throw new ResourceNotFoundException(`Payment with id: ${paymentId} not found`);
+  }
 
   return payment;
 };

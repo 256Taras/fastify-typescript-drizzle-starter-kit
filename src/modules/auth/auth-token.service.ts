@@ -1,5 +1,3 @@
-import type { UUID } from "node:crypto";
-
 import type { Cradle } from "@fastify/awilix";
 import { partial } from "rambda";
 
@@ -23,7 +21,7 @@ const generateTokens = async ({ db, encrypterService, jwtService }: Cradle, user
     { expiresIn: FASTIFY_JWT_CONFIG.refreshTokenExpirationTime },
   );
 
-  await db.insert(authTokens).values({ id: refreshTokenId, ppid: refreshHash, userId: user.id as UUID });
+  await db.insert(authTokens).values({ id: refreshTokenId, ppid: refreshHash, userId: user.id });
 
   return { accessToken, refreshToken, user };
 };

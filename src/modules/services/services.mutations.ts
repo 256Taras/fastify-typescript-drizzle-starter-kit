@@ -11,7 +11,7 @@ import { ForbiddenException, ResourceNotFoundException } from "#libs/errors/doma
 
 const createService = async (
   { servicesRepository, providersRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
-  providerId: string,
+  providerId: UUID,
   input: ServiceCreateInput,
 ): Promise<Service> => {
   const { userId } = sessionStorageService.getUser();
@@ -56,7 +56,7 @@ const updateService = async (
     throw new ResourceNotFoundException(`Service with id: ${serviceId} not found`);
   }
 
-  const provider = await providersRepository.findOneById(service.providerId as UUID);
+  const provider = await providersRepository.findOneById(service.providerId);
   if (!provider) {
     throw new ResourceNotFoundException(`Provider with id: ${service.providerId} not found`);
   }
@@ -82,7 +82,7 @@ const updateService = async (
 
 const deleteService = async (
   { servicesRepository, providersRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
-  serviceId: string,
+  serviceId: UUID,
 ): Promise<Service> => {
   const { userId } = sessionStorageService.getUser();
 

@@ -11,7 +11,7 @@ import { ResourceNotFoundException } from "#libs/errors/domain.errors.ts";
 import type { PaginationParams } from "#libs/pagination/pagination.types.d.ts";
 import { services } from "#modules/services/services.model.ts";
 
-const findOneById = async ({ servicesRepository, logger }: Cradle, serviceId: string): Promise<Service> => {
+const findOneById = async ({ servicesRepository, logger }: Cradle, serviceId: UUID): Promise<Service> => {
   logger.debug(`[ServicesQueries] Getting service: ${serviceId}`);
 
   const service = await servicesRepository.findOneById(serviceId);

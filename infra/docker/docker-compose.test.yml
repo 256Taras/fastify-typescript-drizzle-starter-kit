@@ -38,9 +38,9 @@ services:
     command:
       - |
         echo "📦 Running database migrations..."
-        npm run database:push:test || true
+        pnpm db:push:test
         echo "🧪 Running tests..."
-        npm test
+        pnpm test
 
 networks:
   test-network:

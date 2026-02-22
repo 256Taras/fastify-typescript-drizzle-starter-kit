@@ -1,3 +1,5 @@
+import type { UUID } from "node:crypto";
+
 import type { Cradle } from "@fastify/awilix";
 import { eq } from "drizzle-orm";
 import { partial } from "rambda";
@@ -9,7 +11,7 @@ import { ResourceNotFoundException } from "#libs/errors/domain.errors.ts";
 import type { PaginationParams } from "#libs/pagination/pagination.types.d.ts";
 import { bookings } from "#modules/bookings/bookings.model.ts";
 
-const findOneById = async ({ bookingsRepository, logger }: Cradle, bookingId: string): Promise<Booking> => {
+const findOneById = async ({ bookingsRepository, logger }: Cradle, bookingId: UUID): Promise<Booking> => {
   logger.debug(`[BookingsQueries] Getting booking: ${bookingId}`);
 
   const booking = await bookingsRepository.findOneById(bookingId);

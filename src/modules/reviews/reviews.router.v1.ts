@@ -1,3 +1,5 @@
+import type { UUID } from "node:crypto";
+
 import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
 
 import reviewsSchemas from "./reviews.schemas.ts";
@@ -5,7 +7,7 @@ import reviewsSchemas from "./reviews.schemas.ts";
 const reviewsRouterV1: FastifyPluginAsyncTypebox = async (app) => {
   const { reviewsMutations, reviewsQueries } = app.diContainer.cradle;
 
-  app.get<{ Params: { serviceId: string } }>("/service/:serviceId", {
+  app.get<{ Params: { serviceId: UUID } }>("/service/:serviceId", {
     schema: reviewsSchemas.getByServiceId,
 
     async handler(req) {

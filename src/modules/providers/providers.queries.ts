@@ -1,3 +1,5 @@
+import type { UUID } from "node:crypto";
+
 import type { Cradle } from "@fastify/awilix";
 import { isNull } from "drizzle-orm";
 import { partial } from "rambda";
@@ -9,7 +11,7 @@ import { ResourceNotFoundException } from "#libs/errors/domain.errors.ts";
 import type { PaginationParams } from "#libs/pagination/pagination.types.d.ts";
 import { providers } from "#modules/providers/providers.model.ts";
 
-const findOneById = async ({ providersRepository, logger }: Cradle, providerId: string): Promise<Provider> => {
+const findOneById = async ({ providersRepository, logger }: Cradle, providerId: UUID): Promise<Provider> => {
   logger.debug(`[ProvidersQueries] Getting provider: ${providerId}`);
 
   const provider = await providersRepository.findOneById(providerId);

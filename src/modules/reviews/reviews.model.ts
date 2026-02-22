@@ -15,13 +15,16 @@ export const reviews = pgTable(
   {
     id: uuid("id").$type<UUID>().primaryKey().notNull().defaultRandom(),
     bookingId: uuid("booking_id")
+      .$type<UUID>()
       .notNull()
       .unique()
       .references(() => bookings.id),
     userId: uuid("user_id")
+      .$type<UUID>()
       .notNull()
       .references(() => users.id),
     serviceId: uuid("service_id")
+      .$type<UUID>()
       .notNull()
       .references(() => services.id),
     rating: integer("rating").notNull(),

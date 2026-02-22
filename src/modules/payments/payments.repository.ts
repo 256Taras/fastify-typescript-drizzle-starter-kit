@@ -1,15 +1,26 @@
 import type { UUID } from "node:crypto";
 
 import type { Cradle } from "@fastify/awilix";
-import { eq, type InferInsertModel } from "drizzle-orm";
+import { and, eq, type InferInsertModel } from "drizzle-orm";
 import { partial } from "rambda";
 
 import type { Payment, PaymentInsert } from "./payments.types.d.ts";
 
 import { createBaseRepository } from "#libs/persistence/base-repository.ts";
+import { bookings } from "#modules/bookings/bookings.model.ts";
 import { PAYMENT_PUBLIC_COLUMNS, payments } from "#modules/payments/payments.model.ts";
 
 type PaymentInsertDrizzle = InferInsertModel<typeof payments>;
+
+const findOneByIdForUser = async ({ db }: Cradle, paymentId: UUID, userId: UUID): Promise<Payment | undefined> => {
+  const [payment] = await db
+    .select(PAYMENT_PUBLIC_COLUMNS)
+    .from(payments)
+    .innerJoin(bookings, eq(payments.bookingId, bookings.id))
+    .where(and(eq(payments.id, paymentId), eq(bookings.userId, userId)));
+
+  return payment;
+};
 
 const findOneByBookingId = async ({ db }: Cradle, bookingId: UUID): Promise<Payment | undefined> => {
   const [payment] = await db.select(PAYMENT_PUBLIC_COLUMNS).from(payments).where(eq(payments.bookingId, bookingId));
@@ -38,6 +49,7 @@ export default function paymentsRepository(deps: Cradle) {
   return {
     createOne: baseRepo.createOne,
     findOneById: baseRepo.findOneById,
+    findOneByIdForUser: partial(findOneByIdForUser, [deps]),
     findOneByBookingId: partial(findOneByBookingId, [deps]),
     updateOneById: partial(updateOneById, [deps]),
   };

@@ -30,6 +30,7 @@ const createBooking = async (deps: Cradle, input: BookingCreateInput): Promise<B
     servicesRepository,
     providersRepository,
     usersRepository,
+    unitOfWork,
     dateTimeService,
     eventBus,
     logger,
@@ -63,19 +64,21 @@ const createBooking = async (deps: Cradle, input: BookingCreateInput): Promise<B
   const startAtIso = dateTimeService.toISOString(startAt);
   const endAtIso = dateTimeService.toISOString(endAt);
 
-  const existingBookings = await bookingsRepository.findManyByServiceIdAndTimeRange(input.serviceId, startAtIso, endAtIso);
+  const newBooking = await unitOfWork.run(async () => {
+    const existingBookings = await bookingsRepository.findManyByServiceIdAndTimeRange(input.serviceId, startAtIso, endAtIso);
 
-  if (hasTimeConflict(existingBookings, startAt, endAt)) {
-    throw new ConflictException("Time slot is already booked");
-  }
+    if (hasTimeConflict(existingBookings, startAt, endAt)) {
+      throw new ConflictException("Time slot is already booked");
+    }
 
-  const newBooking = await bookingsRepository.createOne({
-    serviceId: input.serviceId,
-    userId,
-    startAt: startAtIso,
-    endAt: endAtIso,
-    totalPrice: service.price,
-    status: BOOKING_STATUS.pending,
+    return bookingsRepository.createOne({
+      serviceId: input.serviceId,
+      userId,
+      startAt: startAtIso,
+      endAt: endAtIso,
+      totalPrice: service.price,
+      status: BOOKING_STATUS.pending,
+    });
   });
 
   const user = await usersRepository.findOneById(userId);

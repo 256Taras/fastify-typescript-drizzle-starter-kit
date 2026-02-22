@@ -90,7 +90,7 @@ export class RestApiServer {
 
     this.#autoLoadRoutes();
 
-    // Note: Metrics plugin is registered after server start for better startup performance
+    await this.#fastify.register(fastifyMetrics, FASTIFY_METRICS_CONFIG as never);
   }
 
   /**
@@ -111,8 +111,6 @@ export class RestApiServer {
    */
   async start({ ip, port }: { ip: string; port: number }): Promise<void> {
     await this.buildServerApp();
-
-    await this.#fastify.register(fastifyMetrics, FASTIFY_METRICS_CONFIG as never);
 
     await this.#fastify.listen({ host: ip, port });
 

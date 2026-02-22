@@ -15,7 +15,7 @@ import {
   ResourceNotFoundException,
 } from "#libs/errors/domain.errors.ts";
 import { generatePaginatedRouteSchema } from "#libs/pagination/index.ts";
-import { mapHttpErrorsToSchemaErrorCollection } from "#libs/utils/schemas.ts";
+import { mapHttpErrorsToSchemaErrorCollection, TypeUuid } from "#libs/utils/schemas.ts";
 
 const reviewsSchemas = {
   getByServiceId: generatePaginatedRouteSchema({
@@ -24,7 +24,7 @@ const reviewsSchemas = {
     errorSchemas: mapHttpErrorsToSchemaErrorCollection(pick([BadRequestException.name], defaultHttpErrorCollection)),
     summary: "Get service reviews",
     tags: SWAGGER_TAGS.REVIEWS,
-    paramsSchema: Type.Object({ serviceId: Type.String({ format: "uuid" }) }),
+    paramsSchema: Type.Object({ serviceId: TypeUuid() }),
   }),
 
   create: {

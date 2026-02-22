@@ -72,7 +72,7 @@ const updateProvider = async (
 
 const deleteProvider = async (
   { providersRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
-  providerId: string,
+  providerId: UUID,
 ): Promise<Provider> => {
   const { userId } = sessionStorageService.getUser();
 

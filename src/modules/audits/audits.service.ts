@@ -1,3 +1,5 @@
+import type { UUID } from "node:crypto";
+
 import type { Cradle } from "@fastify/awilix";
 
 import type { AuditLogRow } from "./audits.model.ts";
@@ -6,12 +8,12 @@ import type { AuditAction, AuditLogCreateInput, EntityType } from "./audits.type
 interface AuditContext {
   ipAddress?: string;
   userAgent?: string;
-  userId?: string;
+  userId?: UUID;
 }
 
 interface LogAuditParams {
   action: AuditAction;
-  entityId?: string;
+  entityId?: UUID;
   entityType: EntityType;
   metadata?: Record<string, unknown>;
 }
@@ -44,10 +46,10 @@ export default function auditsService(deps: Cradle) {
     log: (context: AuditContext, params: LogAuditParams) => log(deps, context, params),
 
     logUserAction: (
-      userId: string,
+      userId: UUID,
       action: AuditAction,
       entityType: EntityType,
-      entityId?: string,
+      entityId?: UUID,
       metadata?: Record<string, unknown>,
     ) => log(deps, { userId }, { action, entityType, entityId, metadata }),
 

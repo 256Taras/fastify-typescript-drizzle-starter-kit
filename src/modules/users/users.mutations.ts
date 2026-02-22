@@ -55,7 +55,7 @@ const updateUser = async (
   return updatedUser;
 };
 
-const deleteUser = async ({ usersRepository, eventBus, logger }: Cradle, userId: string): Promise<User> => {
+const deleteUser = async ({ usersRepository, eventBus, logger }: Cradle, userId: UUID): Promise<User> => {
   logger.debug(`[UsersMutations] Deleting user: ${userId}`);
 
   const deletedUser = await usersRepository.softDeleteOneById(userId);

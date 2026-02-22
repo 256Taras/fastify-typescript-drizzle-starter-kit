@@ -14,7 +14,7 @@ import { COMMON_CONTRACTS_V1 } from "#libs/contracts/v1/index.ts";
 import { defaultHttpErrorCollection } from "#libs/errors/default-http-error-collection.ts";
 import { BadRequestException, ForbiddenException, ResourceNotFoundException } from "#libs/errors/domain.errors.ts";
 import { generatePaginatedRouteSchema } from "#libs/pagination/index.ts";
-import { mapHttpErrorsToSchemaErrorCollection } from "#libs/utils/schemas.ts";
+import { mapHttpErrorsToSchemaErrorCollection, TypeUuid } from "#libs/utils/schemas.ts";
 
 const servicesSchemas = {
   getMany: generatePaginatedRouteSchema({
@@ -41,7 +41,7 @@ const servicesSchemas = {
   createOne: {
     body: SERVICE_CREATE_INPUT_CONTRACT,
     description: "Create a new service for a provider",
-    params: Type.Object({ providerId: Type.String({ format: "uuid" }) }),
+    params: Type.Object({ providerId: TypeUuid() }),
     response: {
       201: SERVICE_OUTPUT_CONTRACT,
       ...mapHttpErrorsToSchemaErrorCollection(

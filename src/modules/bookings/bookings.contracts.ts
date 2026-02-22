@@ -7,7 +7,9 @@ import { cursorPaginationSchema, TypeDateTimeString, TypeUuid } from "#libs/util
 
 export { BOOKING_STATUS } from "./bookings.constants.ts";
 
-export const BOOKING_ENTITY_CONTRACT = createSelectSchema(bookings);
+const uuidColumns = { id: TypeUuid(), serviceId: TypeUuid(), userId: TypeUuid() };
+
+export const BOOKING_ENTITY_CONTRACT = createSelectSchema(bookings, uuidColumns);
 
 export const BOOKING_INSERT_CONTRACT = createInsertSchema(bookings);
 

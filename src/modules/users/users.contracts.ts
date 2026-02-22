@@ -2,10 +2,12 @@ import { Type } from "@sinclair/typebox";
 import type { Static } from "@sinclair/typebox";
 import { createInsertSchema, createSelectSchema } from "drizzle-typebox";
 
-import { paginationSchema } from "#libs/utils/schemas.ts";
+import { paginationSchema, TypeUuid } from "#libs/utils/schemas.ts";
 import { users } from "#modules/users/users.model.ts";
 
-export const USER_ENTITY_CONTRACT = createSelectSchema(users);
+const uuidColumns = { id: TypeUuid() };
+
+export const USER_ENTITY_CONTRACT = createSelectSchema(users, uuidColumns);
 export const USER_INSERT_CONTRACT = createInsertSchema(users);
 
 export const USER_OUTPUT_CONTRACT = Type.Omit(USER_ENTITY_CONTRACT, ["deletedAt", "password"]);

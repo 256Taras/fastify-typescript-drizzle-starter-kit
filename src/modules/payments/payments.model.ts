@@ -17,6 +17,7 @@ export const payments = pgTable(
   {
     id: uuid("id").$type<UUID>().primaryKey().notNull().defaultRandom(),
     bookingId: uuid("booking_id")
+      .$type<UUID>()
       .notNull()
       .unique()
       .references(() => bookings.id),

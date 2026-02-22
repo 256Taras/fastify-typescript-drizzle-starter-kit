@@ -124,10 +124,10 @@ module.exports = {
       comment: "Routes should only import handlers, schemas, and contracts",
       severity: "error",
       from: {
-        path: String.raw`^src/modules/.*/.*\.router\.v[0-9]+\.js$`,
+        path: String.raw`^src/modules/.*/.*\.router\.v[0-9]+\.ts$`,
       },
       to: {
-        pathNot: [String.raw`^src/modules/.*/.*\.(handler|schemas|contracts|events)\.js$`, "^src/libs/", "^node_modules/"],
+        pathNot: [String.raw`^src/modules/.*/.*\.(handler|schemas|contracts|events)\.ts$`, "^src/libs/", "^node_modules/"],
       },
     },
     {
@@ -135,11 +135,11 @@ module.exports = {
       comment: "Handlers should only import domain services, repositories, queries, mutations, and libraries",
       severity: "error",
       from: {
-        path: String.raw`^src/modules/.*/.*\.handler\.js$`,
+        path: String.raw`^src/modules/.*/.*\.handler\.ts$`,
       },
       to: {
         pathNot: [
-          String.raw`^src/modules/.*/.*\.(domain|repository|queries|mutations|contracts|events)\.js$`,
+          String.raw`^src/modules/.*/.*\.(domain|repository|queries|mutations|contracts|events)\.ts$`,
           "^src/libs/",
           "^node_modules/",
         ],
@@ -150,10 +150,10 @@ module.exports = {
       comment: "Routes should not directly import repositories",
       severity: "error",
       from: {
-        path: String.raw`^src/modules/.*/.*\.router\.v[0-9]+\.js$`,
+        path: String.raw`^src/modules/.*/.*\.router\.v[0-9]+\.ts$`,
       },
       to: {
-        path: String.raw`^src/modules/.*/.*\.repository\.js$`,
+        path: String.raw`^src/modules/.*/.*\.repository\.ts$`,
       },
     },
     {
@@ -166,7 +166,7 @@ module.exports = {
       },
       to: {
         path: "^src/modules/(?!$1/)([^/]+)/",
-        pathNot: String.raw`^src/modules/[^/]+/.*\.(events|contracts|model)\.js$`,
+        pathNot: String.raw`^src/modules/[^/]+/.*\.(events|contracts|model)\.ts$`,
       },
     },
   ],

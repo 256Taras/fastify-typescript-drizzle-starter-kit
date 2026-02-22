@@ -3,7 +3,7 @@ import type { UUID } from "node:crypto";
 import type { Cradle } from "@fastify/awilix";
 import { partial } from "rambda";
 
-import { calculateAverageRating, canLeaveReview } from "./reviews.domain.ts";
+import { canLeaveReview } from "./reviews.domain.ts";
 import { REVIEW_EVENTS } from "./reviews.events.ts";
 import type { Review, ReviewCreateInput } from "./reviews.types.d.ts";
 
@@ -20,7 +20,7 @@ const createReview = async (
     logger,
     sessionStorageService,
   }: Cradle,
-  bookingId: string,
+  bookingId: UUID,
   input: ReviewCreateInput,
 ): Promise<Review> => {
   const { userId } = sessionStorageService.getUser();
@@ -50,14 +50,10 @@ const createReview = async (
   });
 
   const stats = await reviewsRepository.getServiceStats(booking.serviceId);
-  const newAvgRating = calculateAverageRating([
-    ...Array.from<number>({ length: stats.reviewsCount - 1 }).fill(stats.avgRating),
-    input.rating,
-  ]);
 
-  const service = await servicesRepository.findOneById(booking.serviceId as UUID);
+  const service = await servicesRepository.findOneById(booking.serviceId);
   if (service) {
-    await providersRepository.updateRating(service.providerId as UUID, newAvgRating.toFixed(1), stats.reviewsCount);
+    await providersRepository.updateRating(service.providerId, stats.avgRating.toFixed(1), stats.reviewsCount);
   }
 
   const user = await usersRepository.findOneById(userId);

@@ -1,3 +1,5 @@
+import type { UUID } from "node:crypto";
+
 import type authPasswordResetTokenRepository from "./auth-password-reset-token.repository.ts";
 import type authTokenRepository from "./auth-token.repository.ts";
 import type authTokenService from "./auth-token.service.ts";
@@ -14,7 +16,7 @@ export interface AuthSignedInPayload {
 }
 
 export interface AuthSignedOutPayload {
-  userId: string;
+  userId: UUID;
 }
 
 export interface AuthSignedUpPayload {

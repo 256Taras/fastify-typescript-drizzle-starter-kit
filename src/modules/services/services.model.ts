@@ -17,6 +17,7 @@ export const services = pgTable(
   {
     id: uuid("id").$type<UUID>().primaryKey().notNull().defaultRandom(),
     providerId: uuid("provider_id")
+      .$type<UUID>()
       .notNull()
       .references(() => providers.id),
     name: varchar("name", { length: 255 }).notNull(),
