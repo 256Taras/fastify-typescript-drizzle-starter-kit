@@ -97,10 +97,14 @@ class ErrorHandler {
         : undefined;
 
     const traceId = requestContext.get("traceId");
+
+    const developerMessage = fastifyError.message || httpErrorResponseTemplate.developerMessage;
+
     return {
       errorDetails,
       traceId,
       ...httpErrorResponseTemplate,
+      developerMessage,
     };
   }
 

@@ -79,7 +79,7 @@ export const defaultHttpErrorCollection: Record<string, HttpErrorEntry> = {
     userMessage: "Internal server error",
   },
   [INVALID_JSON_SYNTAX_400.name]: {
-    code: "400001",
+    code: "400002",
     developerMessage: "The JSON sent in the request has an invalid syntax.",
     statusCode: 400,
     userMessage: "Bad request",
@@ -109,7 +109,7 @@ export const defaultHttpErrorCollection: Record<string, HttpErrorEntry> = {
     userMessage: "Resource not found",
   },
   [SERVER_TIMEOUT_408.name]: {
-    code: "4008000",
+    code: "408000",
     developerMessage: "The server did not receive a complete request message within the time that it was prepared to wait.",
     statusCode: 408,
     userMessage: "Server timeout",
@@ -127,13 +127,13 @@ export const defaultHttpErrorCollection: Record<string, HttpErrorEntry> = {
     userMessage: "Too many requests",
   },
   [UNAUTHORIZED_ACCESS_401.name]: {
-    code: "40100",
+    code: "401000",
     developerMessage: "JWT is not valid",
     statusCode: 401,
     userMessage: "Unauthorized",
   },
   [UnauthorizedException.name]: {
-    code: "40101",
+    code: "401001",
     developerMessage: "Access to this resource is denied",
     statusCode: 401,
     userMessage: "Unauthorized",

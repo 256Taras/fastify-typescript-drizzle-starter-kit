@@ -10,5 +10,9 @@ declare module "@fastify/request-context" {
     TIMEOUT_KEY: NodeJS.Timeout | null;
     traceId: string;
     TX_KEY: null | TransactionClient;
+    userCredentials:
+      | { ppid: string; refreshTokenId: import("node:crypto").UUID; userId: import("node:crypto").UUID }
+      | undefined;
+    userJwtData: { refreshTokenId: import("node:crypto").UUID; userId: import("node:crypto").UUID } | undefined;
   }
 }

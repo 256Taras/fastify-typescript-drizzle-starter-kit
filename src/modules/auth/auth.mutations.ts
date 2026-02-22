@@ -23,7 +23,7 @@ import {
 } from "#libs/errors/domain.errors.ts";
 
 const signUpUser = async (
-  { authTokenService, encrypterService, eventBus, logger, usersRepository }: Cradle,
+  { authTokenService, encrypterService, eventBus, logger, unitOfWork, usersRepository }: Cradle,
   input: SignUpInput,
 ): Promise<Credentials> => {
   logger.debug(`[AuthMutations] Sign up user with email: ${input.email}`);
@@ -35,18 +35,23 @@ const signUpUser = async (
 
   const hashedPassword = await encrypterService.getHash(input.password);
 
-  const newUser = await usersRepository.createOne({
-    email: input.email,
-    firstName: input.firstName,
-    lastName: input.lastName,
-    password: hashedPassword,
+  const { credentials, newUser } = await unitOfWork.run(async () => {
+    const newUser = await usersRepository.createOne({
+      email: input.email,
+      firstName: input.firstName,
+      lastName: input.lastName,
+      password: hashedPassword,
+    });
+
+    const credentials = await authTokenService.generateTokens(newUser);
+    return { credentials, newUser };
   });
 
   await eventBus.emit(AUTH_EVENTS.SIGNED_UP, { user: newUser });
 
   logger.info(`[AuthMutations] User signed up: ${newUser.id}`);
 
-  return authTokenService.generateTokens(newUser);
+  return credentials;
 };
 
 const signInUser = async (

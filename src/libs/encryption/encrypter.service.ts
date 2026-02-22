@@ -59,7 +59,10 @@ const compareHash = async (password: string, hash: string): Promise<boolean> => 
   return new Promise((resolve, reject) => {
     crypto.scrypt(password, salt, cryptoConfig.keyLength, (err, derivedKey) => {
       if (err) reject(err);
-      else resolve(storedKey === derivedKey.toString("hex"));
+      else {
+        const storedBuffer = Buffer.from(storedKey, "hex");
+        resolve(storedBuffer.length === derivedKey.length && crypto.timingSafeEqual(storedBuffer, derivedKey));
+      }
     });
   });
 };
