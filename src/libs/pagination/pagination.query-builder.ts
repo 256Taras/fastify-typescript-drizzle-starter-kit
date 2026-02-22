@@ -148,7 +148,6 @@ export class PaginationQueryBuilder<TTable, TStrategy extends "cursor" | "offset
       return { entities, itemCount };
     } catch (error) {
       this.#handleDatabaseError(error);
-      throw error;
     }
   }
 

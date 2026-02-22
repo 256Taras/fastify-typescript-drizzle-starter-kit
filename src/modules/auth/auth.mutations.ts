@@ -63,13 +63,13 @@ const signInUser = async (
   const user = await usersRepository.findOneByEmailWithPassword(input.email);
 
   if (!user) {
-    throw new ResourceNotFoundException(`User with email: ${input.email} not found`);
+    throw new UnauthorizedException("Invalid email or password");
   }
 
   const isPasswordValid = await encrypterService.compareHash(input.password, user.password);
 
   if (!isPasswordValid) {
-    throw new UnauthorizedException("Invalid password");
+    throw new UnauthorizedException("Invalid email or password");
   }
 
   const { password: _password, ...userWithoutPassword } = user;

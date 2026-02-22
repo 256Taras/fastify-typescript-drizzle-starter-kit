@@ -9,6 +9,17 @@ import { authTokens } from "./auth-token.model.ts";
 
 type AuthToken = InferSelectModel<typeof authTokens>;
 
+type CreateAuthTokenInput = {
+  id: UUID;
+  ppid: string;
+  userId: UUID;
+};
+
+const createOne = async ({ db }: Cradle, input: CreateAuthTokenInput): Promise<AuthToken> => {
+  const [token] = await db.insert(authTokens).values(input).returning();
+  return token;
+};
+
 const findOneByIdAndUserId = async ({ db }: Cradle, id: UUID, userId: UUID): Promise<AuthToken | undefined> => {
   const [token] = await db
     .select()
@@ -27,6 +38,7 @@ const deleteManyAuthTokens = async ({ db }: Cradle, ppid: string, userId: UUID):
 
 export default function authTokenRepository(deps: Cradle) {
   return {
+    createOne: partial(createOne, [deps]),
     deleteMany: partial(deleteManyAuthTokens, [deps]),
     findOneByIdAndUserId: partial(findOneByIdAndUserId, [deps]),
   };

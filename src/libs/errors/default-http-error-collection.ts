@@ -67,7 +67,7 @@ export const defaultHttpErrorCollection: Record<string, HttpErrorEntry> = {
     userMessage: "Internal server error",
   },
   [ForbiddenException.name]: {
-    code: "4003000",
+    code: "403000",
     developerMessage: "Unable to access for this user",
     statusCode: 403,
     userMessage: "You do not have permission to access this resource",
