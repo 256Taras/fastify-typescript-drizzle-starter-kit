@@ -4,8 +4,14 @@ import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
 import { ENV_CONFIG } from "#configs/env.config.ts";
 import { logger } from "#libs/logging/logger.service.ts";
+import { auditLogs } from "#modules/audits/audits.model.ts";
 import { authPasswordResetTokens } from "#modules/auth/auth-password-reset-token.model.ts";
 import { authTokens } from "#modules/auth/auth-token.model.ts";
+import { bookings } from "#modules/bookings/bookings.model.ts";
+import { payments } from "#modules/payments/payments.model.ts";
+import { providers } from "#modules/providers/providers.model.ts";
+import { reviews } from "#modules/reviews/reviews.model.ts";
+import { services } from "#modules/services/services.model.ts";
 import { users } from "#modules/users/users.model.ts";
 import type { SeedConfig } from "#tests/helpers/types/seed.types.ts";
 
@@ -13,14 +19,26 @@ const TEST_DB_NAME = "test_db";
 const TEST_DB_PORT = "5434";
 
 export const TABLE_NAMES = {
+  auditLogs: "AUDIT_LOGS",
   authPasswordResetTokens: "AUTH_PASSWORD_RESET_TOKENS",
   authTokens: "AUTH_TOKENS",
+  bookings: "BOOKINGS",
+  payments: "PAYMENTS",
+  providers: "PROVIDERS",
+  reviews: "REVIEWS",
+  services: "SERVICES",
   users: "USERS",
 } as const;
 
 const DRIZZLE_TABLES: Record<string, PgTable> = {
+  [TABLE_NAMES.auditLogs]: auditLogs,
   [TABLE_NAMES.authPasswordResetTokens]: authPasswordResetTokens,
   [TABLE_NAMES.authTokens]: authTokens,
+  [TABLE_NAMES.bookings]: bookings,
+  [TABLE_NAMES.payments]: payments,
+  [TABLE_NAMES.providers]: providers,
+  [TABLE_NAMES.reviews]: reviews,
+  [TABLE_NAMES.services]: services,
   [TABLE_NAMES.users]: users,
 };
 

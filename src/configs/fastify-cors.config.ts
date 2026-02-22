@@ -13,5 +13,5 @@ export const FASTIFY_CORS_CONFIG = {
   methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   optionsSuccessStatus: 204,
   origin: parseAllowedOrigins(),
-  preflightContinue: true,
+  preflightContinue: false,
 } as const;

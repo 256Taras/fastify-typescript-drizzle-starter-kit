@@ -49,12 +49,12 @@ export default function individualGenerators(plop) {
     description: "Generate repository file",
     prompts: [simpleNamePrompt],
     actions: (data) => {
-      data.modulePath = `${modulesPath}/{{camelCase name}}`;
+      data.modulePath = `${modulesPath}/{{kebabCase name}}`;
       data.softDelete = true; // Default
       return [
         {
           type: "add",
-          path: `${data.modulePath}/{{camelCase name}}.repository.ts`,
+          path: `${data.modulePath}/{{kebabCase name}}.repository.ts`,
           templateFile: join(templatesPath, "repository/repository.hbs"),
         },
       ];
@@ -66,13 +66,13 @@ export default function individualGenerators(plop) {
     description: "Generate queries file (read operations)",
     prompts: [simpleNamePrompt],
     actions: (data) => {
-      data.modulePath = `${modulesPath}/{{camelCase name}}`;
+      data.modulePath = `${modulesPath}/{{kebabCase name}}`;
       data.withPagination = existsSync(`${modulesPath}/${data.name}/${data.name}.pagination-config.ts`);
       data.softDelete = true;
       return [
         {
           type: "add",
-          path: `${data.modulePath}/{{camelCase name}}.queries.ts`,
+          path: `${data.modulePath}/{{kebabCase name}}.queries.ts`,
           templateFile: join(templatesPath, "queries/queries.hbs"),
         },
       ];
@@ -92,12 +92,12 @@ export default function individualGenerators(plop) {
       },
     ],
     actions: (data) => {
-      data.modulePath = `${modulesPath}/{{camelCase name}}`;
+      data.modulePath = `${modulesPath}/{{kebabCase name}}`;
       data.softDelete = true;
       const actions = [
         {
           type: "add",
-          path: `${data.modulePath}/{{camelCase name}}.mutations.ts`,
+          path: `${data.modulePath}/{{kebabCase name}}.mutations.ts`,
           templateFile: join(templatesPath, "mutations/mutations.hbs"),
         },
       ];
@@ -108,7 +108,7 @@ export default function individualGenerators(plop) {
         if (!existsSync(eventsPath)) {
           actions.push({
             type: "add",
-            path: `${data.modulePath}/{{camelCase name}}.events.ts`,
+            path: `${data.modulePath}/{{kebabCase name}}.events.ts`,
             templateFile: join(templatesPath, "events/events.hbs"),
           });
         }
@@ -123,16 +123,16 @@ export default function individualGenerators(plop) {
     description: "Generate events and event handlers",
     prompts: [simpleNamePrompt],
     actions: (data) => {
-      data.modulePath = `${modulesPath}/{{camelCase name}}`;
+      data.modulePath = `${modulesPath}/{{kebabCase name}}`;
       return [
         {
           type: "add",
-          path: `${data.modulePath}/{{camelCase name}}.events.ts`,
+          path: `${data.modulePath}/{{kebabCase name}}.events.ts`,
           templateFile: join(templatesPath, "events/events.hbs"),
         },
         {
           type: "add",
-          path: `${data.modulePath}/{{camelCase name}}.event-handlers.ts`,
+          path: `${data.modulePath}/{{kebabCase name}}.event-handlers.ts`,
           templateFile: join(templatesPath, "event-handlers/event-handlers.hbs"),
         },
       ];
@@ -152,12 +152,12 @@ export default function individualGenerators(plop) {
       },
     ],
     actions: (data) => {
-      data.modulePath = `${modulesPath}/{{camelCase name}}`;
+      data.modulePath = `${modulesPath}/{{kebabCase name}}`;
       data.withPagination = existsSync(`${modulesPath}/${data.name}/${data.name}.pagination-config.ts`);
       return [
         {
           type: "add",
-          path: `${data.modulePath}/{{camelCase name}}.router.v1.ts`,
+          path: `${data.modulePath}/{{kebabCase name}}.router.v1.ts`,
           templateFile: join(templatesPath, "router/router.hbs"),
         },
       ];
@@ -169,13 +169,13 @@ export default function individualGenerators(plop) {
     description: "Generate schemas file (Fastify validation)",
     prompts: [simpleNamePrompt],
     actions: (data) => {
-      data.modulePath = `${modulesPath}/{{camelCase name}}`;
+      data.modulePath = `${modulesPath}/{{kebabCase name}}`;
       data.withPagination = existsSync(`${modulesPath}/${data.name}/${data.name}.pagination-config.ts`);
       data.softDelete = true;
       return [
         {
           type: "add",
-          path: `${data.modulePath}/{{camelCase name}}.schemas.ts`,
+          path: `${data.modulePath}/{{kebabCase name}}.schemas.ts`,
           templateFile: join(templatesPath, "schemas/schemas.hbs"),
         },
       ];
@@ -187,12 +187,12 @@ export default function individualGenerators(plop) {
     description: "Generate contracts file (TypeBox types)",
     prompts: [simpleNamePrompt],
     actions: (data) => {
-      data.modulePath = `${modulesPath}/{{camelCase name}}`;
+      data.modulePath = `${modulesPath}/{{kebabCase name}}`;
       data.softDelete = true;
       return [
         {
           type: "add",
-          path: `${data.modulePath}/{{camelCase name}}.contracts.ts`,
+          path: `${data.modulePath}/{{kebabCase name}}.contracts.ts`,
           templateFile: join(templatesPath, "contracts/contracts.hbs"),
         },
       ];
@@ -214,11 +214,11 @@ export default function individualGenerators(plop) {
     ],
     actions: (data) => {
       data.parsedFields = parseFields(data.fields);
-      data.modulePath = `${modulesPath}/{{camelCase name}}`;
+      data.modulePath = `${modulesPath}/{{kebabCase name}}`;
       return [
         {
           type: "add",
-          path: `${data.modulePath}/{{camelCase name}}.model.ts`,
+          path: `${data.modulePath}/{{kebabCase name}}.model.ts`,
           templateFile: join(templatesPath, "model/model.hbs"),
         },
       ];
@@ -230,13 +230,13 @@ export default function individualGenerators(plop) {
     description: "Generate pagination config",
     prompts: [simpleNamePrompt],
     actions: (data) => {
-      data.modulePath = `${modulesPath}/{{camelCase name}}`;
+      data.modulePath = `${modulesPath}/{{kebabCase name}}`;
       data.parsedFields = [];
       data.softDelete = true;
       return [
         {
           type: "add",
-          path: `${data.modulePath}/{{camelCase name}}.pagination-config.ts`,
+          path: `${data.modulePath}/{{kebabCase name}}.pagination-config.ts`,
           templateFile: join(templatesPath, "pagination-config/pagination-config.hbs"),
         },
       ];
@@ -248,12 +248,36 @@ export default function individualGenerators(plop) {
     description: "Generate service file (shared business logic)",
     prompts: [simpleNamePrompt],
     actions: (data) => {
-      data.modulePath = `${modulesPath}/{{camelCase name}}`;
+      data.modulePath = `${modulesPath}/{{kebabCase name}}`;
       return [
         {
           type: "add",
-          path: `${data.modulePath}/{{camelCase name}}.service.ts`,
+          path: `${data.modulePath}/{{kebabCase name}}.service.ts`,
           templateFile: join(templatesPath, "service/service.hbs"),
+        },
+      ];
+    },
+  });
+
+  // ========== DOMAIN (pure business rules) ==========
+  plop.setGenerator("domain", {
+    description: "Generate domain file (pure business rules & guards)",
+    prompts: [
+      simpleNamePrompt,
+      {
+        type: "input",
+        name: "singularName",
+        message: "Singular entity name (e.g. post):",
+        validate: (input) => (input ? true : "Singular name is required"),
+      },
+    ],
+    actions: (data) => {
+      data.modulePath = `${modulesPath}/{{kebabCase name}}`;
+      return [
+        {
+          type: "add",
+          path: `${data.modulePath}/{{kebabCase name}}.domain.ts`,
+          templateFile: join(templatesPath, "domain/domain.hbs"),
         },
       ];
     },
@@ -264,11 +288,11 @@ export default function individualGenerators(plop) {
     description: "Generate types file (Cradle declaration merging)",
     prompts: [simpleNamePrompt],
     actions: (data) => {
-      data.modulePath = `${modulesPath}/{{camelCase name}}`;
+      data.modulePath = `${modulesPath}/{{kebabCase name}}`;
       return [
         {
           type: "add",
-          path: `${data.modulePath}/{{camelCase name}}.types.d.ts`,
+          path: `${data.modulePath}/{{kebabCase name}}.types.d.ts`,
           templateFile: join(templatesPath, "types/types.hbs"),
         },
       ];

@@ -31,7 +31,7 @@
     "lint:fix": "eslint --fix .",
     "prettier:fix": "prettier --write 'src/**/*.{js,cjs,ts}' & prettier --write 'infra/**/*.{js,cjs,ts}' & prettier --write 'tests/**/*.{js,cjs,ts}' & prettier --write 'scripts/**/*.{js,cjs}'",
     "prepare": "husky",
-    "test": "ENV_NAME=test c8 node --test",
+    "test": "ENV_NAME=test c8 node --test --test-concurrency=1",
     "test:unit": "ENV_NAME=test node --test tests/unit",
     "test:integration": "ENV_NAME=test node --test tests/integration",
     "test:e2e": "ENV_NAME=test node --test tests/e2e",

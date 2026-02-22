@@ -3,6 +3,7 @@ import type { UUID } from "node:crypto";
 import type { Cradle } from "@fastify/awilix";
 import { partial } from "rambda";
 
+import { PAYMENT_STATUS } from "./payments.constants.ts";
 import { canPayBooking } from "./payments.domain.ts";
 import { PAYMENT_EVENTS } from "./payments.events.ts";
 import type { Payment } from "./payments.types.d.ts";
@@ -46,7 +47,7 @@ const payBooking = async (
 
   if (existingPayment) {
     const updated = await paymentsRepository.updateOneById(existingPayment.id as UUID, {
-      status: "paid",
+      status: PAYMENT_STATUS.paid,
       paidAt,
     });
     if (!updated) {
@@ -57,7 +58,7 @@ const payBooking = async (
     payment = await paymentsRepository.createOne({
       bookingId,
       amount: booking.totalPrice,
-      status: "paid",
+      status: PAYMENT_STATUS.paid,
       paidAt,
     });
   }
