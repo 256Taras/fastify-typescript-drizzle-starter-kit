@@ -25,28 +25,28 @@ const bookingsRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     schema: bookingsSchemas.createOne,
     async handler(req, rep) {
       rep.status(201);
-      return bookingsMutations.createBooking(req.body);
+      return bookingsMutations.createOne(req.body);
     },
   });
 
   app.patch("/:id/cancel", {
     schema: bookingsSchemas.cancelOne,
     async handler(req) {
-      return bookingsMutations.cancelBooking(req.params.id, req.body);
+      return bookingsMutations.cancelOne(req.params.id, req.body);
     },
   });
 
   app.patch("/:id/confirm", {
     schema: bookingsSchemas.confirmOne,
     async handler(req) {
-      return bookingsMutations.confirmBooking(req.params.id);
+      return bookingsMutations.confirmOne(req.params.id);
     },
   });
 
   app.patch("/:id/complete", {
     schema: bookingsSchemas.completeOne,
     async handler(req) {
-      return bookingsMutations.completeBooking(req.params.id);
+      return bookingsMutations.completeOne(req.params.id);
     },
   });
 };

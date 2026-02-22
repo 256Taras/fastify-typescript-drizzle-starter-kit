@@ -25,7 +25,7 @@ import {
 } from "#libs/errors/domain.errors.ts";
 import { BOOKING_STATUS } from "#modules/bookings/bookings.constants.ts";
 
-const createBooking = async (deps: Cradle, input: BookingCreateInput): Promise<Booking> => {
+const createOneBooking = async (deps: Cradle, input: BookingCreateInput): Promise<Booking> => {
   const {
     bookingsRepository,
     servicesRepository,
@@ -94,7 +94,7 @@ const createBooking = async (deps: Cradle, input: BookingCreateInput): Promise<B
   return newBooking;
 };
 
-const cancelBooking = async (
+const cancelOneBooking = async (
   { bookingsRepository, usersRepository, dateTimeService, eventBus, logger, sessionStorageService }: Cradle,
   bookingId: UUID,
   input: BookingCancelInput,
@@ -137,7 +137,7 @@ const cancelBooking = async (
   return updatedBooking;
 };
 
-const confirmBooking = async (
+const confirmOneBooking = async (
   { bookingsRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
   bookingId: UUID,
 ): Promise<Booking> => {
@@ -173,7 +173,7 @@ const confirmBooking = async (
   return updatedBooking;
 };
 
-const completeBooking = async (
+const completeOneBooking = async (
   { bookingsRepository, usersRepository, dateTimeService, eventBus, logger, sessionStorageService }: Cradle,
   bookingId: UUID,
 ): Promise<Booking> => {
@@ -211,9 +211,9 @@ const completeBooking = async (
 
 export default function bookingsMutations(deps: Cradle) {
   return {
-    createBooking: partial(createBooking, [deps]),
-    cancelBooking: partial(cancelBooking, [deps]),
-    confirmBooking: partial(confirmBooking, [deps]),
-    completeBooking: partial(completeBooking, [deps]),
+    createOne: partial(createOneBooking, [deps]),
+    cancelOne: partial(cancelOneBooking, [deps]),
+    confirmOne: partial(confirmOneBooking, [deps]),
+    completeOne: partial(completeOneBooking, [deps]),
   };
 }

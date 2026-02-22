@@ -20,7 +20,7 @@ const findOneById = async ({ usersRepository, logger }: Cradle, userId: UUID): P
   return user;
 };
 
-const getProfile = async ({ usersRepository, logger, sessionStorageService }: Cradle): Promise<User> => {
+const getOneProfile = async ({ usersRepository, logger, sessionStorageService }: Cradle): Promise<User> => {
   const { userId } = sessionStorageService.getUser();
 
   logger.debug(`[UsersQueries] Getting profile for user: ${userId}`);
@@ -56,6 +56,6 @@ export default function usersQueries(deps: Cradle) {
     findOneByEmail: partial(findOneByEmail, [deps]),
     findOneById: partial(findOneById, [deps]),
     findMany: partial(findMany, [deps]),
-    getProfile: () => getProfile(deps),
+    getOneProfile: () => getOneProfile(deps),
   };
 }

@@ -8,7 +8,7 @@ const usersRouterV1: FastifyPluginAsyncTypebox = async (app) => {
   app.get("/profile", {
     preHandler: app.auth([app.verifyJwt]),
     schema: usersSchemas.getProfile,
-    handler: () => usersQueries.getProfile(),
+    handler: () => usersQueries.getOneProfile(),
   });
 
   app.get("/", {
@@ -32,7 +32,7 @@ const usersRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     schema: usersSchemas.create,
 
     async handler(req, rep) {
-      const user = await usersMutations.createUser(req.body);
+      const user = await usersMutations.createOne(req.body);
       rep.status(201);
       return user;
     },
@@ -42,7 +42,7 @@ const usersRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     schema: usersSchemas.update,
 
     async handler(req) {
-      return usersMutations.updateUser(req.params.id, req.body);
+      return usersMutations.updateOne(req.params.id, req.body);
     },
   });
 
@@ -50,7 +50,7 @@ const usersRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     schema: usersSchemas.delete,
 
     async handler(req) {
-      return usersMutations.deleteUser(req.params.id);
+      return usersMutations.deleteOne(req.params.id);
     },
   });
 };

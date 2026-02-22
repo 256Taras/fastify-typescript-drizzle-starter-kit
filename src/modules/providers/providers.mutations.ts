@@ -14,7 +14,7 @@ import {
   UnauthorizedException,
 } from "#libs/errors/domain.errors.ts";
 
-const createProvider = async (
+const createOneProvider = async (
   { providersRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
   input: ProviderCreateInput,
 ): Promise<Provider> => {
@@ -44,7 +44,7 @@ const createProvider = async (
   return newProvider;
 };
 
-const updateProvider = async (
+const updateOneProvider = async (
   { providersRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
   providerId: UUID,
   input: ProviderUpdateInput,
@@ -79,7 +79,7 @@ const updateProvider = async (
   return updatedProvider;
 };
 
-const deleteProvider = async (
+const deleteOneProvider = async (
   { providersRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
   providerId: UUID,
 ): Promise<Provider> => {
@@ -115,8 +115,8 @@ const deleteProvider = async (
 
 export default function providersMutations(deps: Cradle) {
   return {
-    createProvider: partial(createProvider, [deps]),
-    updateProvider: partial(updateProvider, [deps]),
-    deleteProvider: partial(deleteProvider, [deps]),
+    createOne: partial(createOneProvider, [deps]),
+    updateOne: partial(updateOneProvider, [deps]),
+    deleteOne: partial(deleteOneProvider, [deps]),
   };
 }

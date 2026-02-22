@@ -9,7 +9,7 @@ import type { Service, ServiceCreateInput, ServiceUpdateInput } from "./services
 
 import { ForbiddenException, ResourceNotFoundException, UnauthorizedException } from "#libs/errors/domain.errors.ts";
 
-const createService = async (
+const createOneService = async (
   { servicesRepository, providersRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
   providerId: UUID,
   input: ServiceCreateInput,
@@ -44,7 +44,7 @@ const createService = async (
   return newService;
 };
 
-const updateService = async (
+const updateOneService = async (
   { servicesRepository, providersRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
   serviceId: UUID,
   input: ServiceUpdateInput,
@@ -84,7 +84,7 @@ const updateService = async (
   return updatedService;
 };
 
-const deleteService = async (
+const deleteOneService = async (
   { servicesRepository, providersRepository, usersRepository, eventBus, logger, sessionStorageService }: Cradle,
   serviceId: UUID,
 ): Promise<Service> => {
@@ -125,8 +125,8 @@ const deleteService = async (
 
 export default function servicesMutations(deps: Cradle) {
   return {
-    createService: partial(createService, [deps]),
-    updateService: partial(updateService, [deps]),
-    deleteService: partial(deleteService, [deps]),
+    createOne: partial(createOneService, [deps]),
+    updateOne: partial(updateOneService, [deps]),
+    deleteOne: partial(deleteOneService, [deps]),
   };
 }

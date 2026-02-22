@@ -9,7 +9,7 @@ import { USER_EVENTS } from "./users.events.ts";
 
 import { ConflictException, ResourceNotFoundException } from "#libs/errors/domain.errors.ts";
 
-const createUser = async (
+const createOneUser = async (
   { usersRepository, encrypterService, eventBus, logger }: Cradle,
   input: UserCreateInput,
 ): Promise<User> => {
@@ -33,7 +33,7 @@ const createUser = async (
   return newUser;
 };
 
-const updateUser = async (
+const updateOneUser = async (
   { usersRepository, eventBus, logger }: Cradle,
   userId: UUID,
   input: UserUpdateInput,
@@ -56,7 +56,7 @@ const updateUser = async (
   return updatedUser;
 };
 
-const deleteUser = async ({ usersRepository, eventBus, logger }: Cradle, userId: UUID): Promise<User> => {
+const deleteOneUser = async ({ usersRepository, eventBus, logger }: Cradle, userId: UUID): Promise<User> => {
   logger.debug(`[UsersMutations] Deleting user: ${userId}`);
 
   const deletedUser = await usersRepository.softDeleteOneById(userId);
@@ -70,8 +70,8 @@ const deleteUser = async ({ usersRepository, eventBus, logger }: Cradle, userId:
 
 export default function usersMutations(deps: Cradle) {
   return {
-    createUser: partial(createUser, [deps]),
-    deleteUser: partial(deleteUser, [deps]),
-    updateUser: partial(updateUser, [deps]),
+    createOne: partial(createOneUser, [deps]),
+    deleteOne: partial(deleteOneUser, [deps]),
+    updateOne: partial(updateOneUser, [deps]),
   };
 }

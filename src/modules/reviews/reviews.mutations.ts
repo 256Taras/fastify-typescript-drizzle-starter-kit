@@ -14,7 +14,7 @@ import {
   UnauthorizedException,
 } from "#libs/errors/domain.errors.ts";
 
-const createReview = async (
+const createOneReview = async (
   {
     reviewsRepository,
     bookingsRepository,
@@ -75,6 +75,6 @@ const createReview = async (
 
 export default function reviewsMutations(deps: Cradle) {
   return {
-    createReview: partial(createReview, [deps]),
+    createOne: partial(createOneReview, [deps]),
   };
 }

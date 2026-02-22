@@ -21,7 +21,7 @@ const reviewsRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     schema: reviewsSchemas.create,
 
     async handler(req, rep) {
-      const review = await reviewsMutations.createReview(req.params.id, req.body);
+      const review = await reviewsMutations.createOne(req.params.id, req.body);
       rep.status(201);
       return review;
     },

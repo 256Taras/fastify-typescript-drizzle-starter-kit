@@ -37,8 +37,8 @@ const updateOneTokenAsUsed = async ({ db, dateTimeService }: Cradle, tokenId: UU
 
 export default function authPasswordResetTokenRepository(deps: Cradle) {
   return {
-    createOnePasswordResetToken: partial(createOnePasswordResetToken, [deps]),
-    findOnePasswordResetToken: partial(findOnePasswordResetToken, [deps]),
-    updateOneTokenAsUsed: partial(updateOneTokenAsUsed, [deps]),
+    createOne: partial(createOnePasswordResetToken, [deps]),
+    findOne: partial(findOnePasswordResetToken, [deps]),
+    updateOneAsUsed: partial(updateOneTokenAsUsed, [deps]),
   };
 }

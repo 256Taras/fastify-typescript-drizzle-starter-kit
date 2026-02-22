@@ -20,20 +20,20 @@ const servicesRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     schema: servicesSchemas.createOne,
     handler: async (req, rep) => {
       rep.status(201);
-      return servicesMutations.createService(req.params.providerId, req.body);
+      return servicesMutations.createOne(req.params.providerId, req.body);
     },
   });
 
   app.patch("/:id", {
     preHandler: app.auth([app.verifyJwt]),
     schema: servicesSchemas.updateOne,
-    handler: (req) => servicesMutations.updateService(req.params.id, req.body),
+    handler: (req) => servicesMutations.updateOne(req.params.id, req.body),
   });
 
   app.delete("/:id", {
     preHandler: app.auth([app.verifyJwt]),
     schema: servicesSchemas.deleteOne,
-    handler: (req) => servicesMutations.deleteService(req.params.id),
+    handler: (req) => servicesMutations.deleteOne(req.params.id),
   });
 };
 

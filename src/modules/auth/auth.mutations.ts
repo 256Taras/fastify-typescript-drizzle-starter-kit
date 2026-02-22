@@ -95,7 +95,7 @@ const signOutUser = async ({
 
   logger.debug(`[AuthMutations] Signing out user: ${userId}`);
 
-  const result = await authTokenRepository.deleteManyAuthTokens(ppid, userId);
+  const result = await authTokenRepository.deleteMany(ppid, userId);
 
   if (result.length === 0) {
     throw new UnauthorizedException("Failed to sign out");
@@ -129,7 +129,7 @@ const refreshUserTokens = async ({
     throw new ResourceNotFoundException("User not found");
   }
 
-  const result = await authTokenRepository.deleteManyAuthTokens(ppid, userId);
+  const result = await authTokenRepository.deleteMany(ppid, userId);
 
   if (result.length === 0) {
     throw new UnauthorizedException("Failed to refresh tokens");
@@ -164,7 +164,7 @@ const forgotUserPassword = async (
   const resetToken = encrypterService.randomBytes(32);
   const expiresAt = dateTimeService.toDate(dateTimeService.addHours(dateTimeService.now(), 1));
 
-  await authPasswordResetTokenRepository.createOnePasswordResetToken({
+  await authPasswordResetTokenRepository.createOne({
     email: input.email,
     expiresAt,
     token: resetToken,
@@ -184,7 +184,7 @@ const resetUserPassword = async (
 ): Promise<typeof STATUS_SUCCESS> => {
   logger.debug(`[AuthMutations] Attempting password reset with token`);
 
-  const resetTokenRecord = await authPasswordResetTokenRepository.findOnePasswordResetToken(input.token);
+  const resetTokenRecord = await authPasswordResetTokenRepository.findOne(input.token);
 
   if (!resetTokenRecord) {
     throw new UnauthorizedException("Invalid or already used reset token");
@@ -203,7 +203,7 @@ const resetUserPassword = async (
   const hashedPassword = await encrypterService.getHash(input.password);
 
   await usersRepository.updateOnePasswordById(user.id, hashedPassword);
-  await authPasswordResetTokenRepository.updateOneTokenAsUsed(resetTokenRecord.id);
+  await authPasswordResetTokenRepository.updateOneAsUsed(resetTokenRecord.id);
 
   logger.info(`[AuthMutations] Password successfully reset for user: ${user.email}`);
 
@@ -251,12 +251,12 @@ const changeUserPassword = async (
 
 export default function authMutations(deps: Cradle) {
   return {
-    changeUserPassword: partial(changeUserPassword, [deps]),
-    forgotUserPassword: partial(forgotUserPassword, [deps]),
-    refreshUserTokens: () => refreshUserTokens(deps),
-    resetUserPassword: partial(resetUserPassword, [deps]),
-    signInUser: partial(signInUser, [deps]),
-    signOutUser: () => signOutUser(deps),
-    signUpUser: partial(signUpUser, [deps]),
+    changePassword: partial(changeUserPassword, [deps]),
+    forgotPassword: partial(forgotUserPassword, [deps]),
+    refreshTokens: () => refreshUserTokens(deps),
+    resetPassword: partial(resetUserPassword, [deps]),
+    signIn: partial(signInUser, [deps]),
+    signOut: () => signOutUser(deps),
+    signUp: partial(signUpUser, [deps]),
   };
 }

@@ -11,7 +11,7 @@ const authRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     schema: authSchemas.signUp,
 
     handler(req) {
-      return authMutations.signUpUser(req.body);
+      return authMutations.signUp(req.body);
     },
   });
 
@@ -22,7 +22,7 @@ const authRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     },
 
     handler(req) {
-      return authMutations.signInUser(req.body);
+      return authMutations.signIn(req.body);
     },
   });
 
@@ -31,7 +31,7 @@ const authRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     preValidation: [app.auth([app.verifyJwtRefreshToken])],
 
     async handler() {
-      return authMutations.signOutUser();
+      return authMutations.signOut();
     },
   });
 
@@ -40,7 +40,7 @@ const authRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     preValidation: [app.auth([app.verifyJwtRefreshToken])],
 
     async handler() {
-      return authMutations.refreshUserTokens();
+      return authMutations.refreshTokens();
     },
   });
 
@@ -51,7 +51,7 @@ const authRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     },
 
     handler(req) {
-      return authMutations.forgotUserPassword(req.body);
+      return authMutations.forgotPassword(req.body);
     },
   });
 
@@ -59,7 +59,7 @@ const authRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     schema: authSchemas.resetPassword,
 
     handler(req) {
-      return authMutations.resetUserPassword(req.body);
+      return authMutations.resetPassword(req.body);
     },
   });
 
@@ -68,7 +68,7 @@ const authRouterV1: FastifyPluginAsyncTypebox = async (app) => {
     preValidation: [app.auth([app.verifyJwt])],
 
     handler(req) {
-      return authMutations.changeUserPassword(req.body);
+      return authMutations.changePassword(req.body);
     },
   });
 };

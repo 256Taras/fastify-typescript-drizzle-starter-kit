@@ -27,7 +27,7 @@ const deleteManyAuthTokens = async ({ db }: Cradle, ppid: string, userId: UUID):
 
 export default function authTokenRepository(deps: Cradle) {
   return {
-    deleteManyAuthTokens: partial(deleteManyAuthTokens, [deps]),
+    deleteMany: partial(deleteManyAuthTokens, [deps]),
     findOneByIdAndUserId: partial(findOneByIdAndUserId, [deps]),
   };
 }

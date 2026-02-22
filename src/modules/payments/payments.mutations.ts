@@ -10,7 +10,7 @@ import type { Payment } from "./payments.types.d.ts";
 
 import { BadRequestException, ResourceNotFoundException, UnauthorizedException } from "#libs/errors/domain.errors.ts";
 
-const payBooking = async (
+const payOneBooking = async (
   {
     paymentsRepository,
     bookingsRepository,
@@ -77,6 +77,6 @@ const payBooking = async (
 
 export default function paymentsMutations(deps: Cradle) {
   return {
-    payBooking: partial(payBooking, [deps]),
+    payOne: partial(payOneBooking, [deps]),
   };
 }

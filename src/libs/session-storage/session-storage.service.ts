@@ -17,24 +17,20 @@ type UserJwtData = {
 };
 
 const getUser = (): UserJwtData => {
-  // @ts-expect-error - requestContext.get has generic type issues
-  const user = requestContext.get(TOKENS.userJwtData) as undefined | UserJwtData;
+  const user = requestContext.get(TOKENS.userJwtData);
   if (!user) throw new UnauthorizedException("User not found in session");
   return user;
 };
 
 const setUser = (data: UserJwtData): void => {
-  // @ts-expect-error - requestContext.set has generic type issues
   requestContext.set(TOKENS.userJwtData, data);
 };
 
 const getUserCredentials = (): undefined | UserCredentials => {
-  // @ts-expect-error - requestContext.get has generic type issues
-  return requestContext.get(TOKENS.userCredentials) as undefined | UserCredentials;
+  return requestContext.get(TOKENS.userCredentials);
 };
 
 const setUserCredentials = (credentials: UserCredentials): void => {
-  // @ts-expect-error - requestContext.set has generic type issues
   requestContext.set(TOKENS.userCredentials, credentials);
 };
 
