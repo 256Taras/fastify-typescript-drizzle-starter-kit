@@ -120,8 +120,8 @@ class Application {
     this.#state = AppState.RUNNING;
 
     logger.info(`[${APP_CONFIG.applicationName}] Running on ${SERVER_CONFIG.ip}:${SERVER_CONFIG.port}`);
-    if (APP_CONFIG.isDev) {
-      logger.info(`[${APP_CONFIG.applicationName}] Docs: ${APP_CONFIG.applicationUrl}/docs`);
+    if (!APP_CONFIG.isProd) {
+      logger.info(`[${APP_CONFIG.applicationName}] Swagger UI → http://localhost:${SERVER_CONFIG.port}/docs`);
     }
   }
 

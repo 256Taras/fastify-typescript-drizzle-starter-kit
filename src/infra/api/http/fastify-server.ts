@@ -15,7 +15,7 @@ import fastifySwaggerUiPlugin from "@fastify/swagger-ui";
 import Fastify from "fastify";
 import fastifyMetrics from "fastify-metrics";
 
-import { FASTIFY_CORS_CONFIG, FASTIFY_METRICS_CONFIG } from "#configs/index.ts";
+import { FASTIFY_CORS_CONFIG, FASTIFY_METRICS_CONFIG, SWAGGER_CONFIG, SWAGGER_UI_CONFIG } from "#configs/index.ts";
 import { globalHttpFastify404ErrorHandler, globalHttpFastifyErrorHandler } from "#infra/api/http/fastify-error-handler.ts";
 import healthCheckRouter from "#infra/api/http/routes/health-check.router.ts";
 import defaultLogger, { logger } from "#libs/logging/logger.service.ts";
@@ -69,8 +69,8 @@ export class RestApiServer {
     // Register Swagger plugins only in dev mode (lazy initialization)
     if (this.#configs.APP_CONFIG.isDev) {
       await Promise.all([
-        this.#fastify.register(fastifySwaggerPlugin, this.#configs.OPENAPI_CONFIG),
-        this.#fastify.register(fastifySwaggerUiPlugin, this.#configs.OPENAPI_CONFIG),
+        this.#fastify.register(fastifySwaggerPlugin, SWAGGER_CONFIG),
+        this.#fastify.register(fastifySwaggerUiPlugin, SWAGGER_UI_CONFIG),
       ]);
     }
 

@@ -3,7 +3,7 @@ FROM node:25-alpine
 WORKDIR /app
 
 # Install pnpm with fixed version
-RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
+RUN npm install -g pnpm@9.15.0
 
 COPY package.json pnpm-lock.yaml .npmrc* ./
 

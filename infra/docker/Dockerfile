@@ -3,7 +3,7 @@ FROM node:25-alpine AS builder
 WORKDIR /app
 
 # Install pnpm with fixed version
-RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
+RUN npm install -g pnpm@9.15.0
 
 # Copy dependency files first (better layer caching)
 COPY package.json pnpm-lock.yaml .npmrc* ./
@@ -20,7 +20,8 @@ FROM node:25-alpine
 
 WORKDIR /app
 
-RUN corepack enable && corepack prepare pnpm@9.15.0 --activate
+# Install pnpm with fixed version
+RUN npm install -g pnpm@9.15.0
 
 # Copy only what's needed from builder
 COPY --from=builder /app/node_modules ./node_modules

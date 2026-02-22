@@ -1,7 +1,7 @@
 import { AUTH_CONFIG } from "./auth.config.ts";
 import { ENV_CONFIG } from "./env.config.ts";
 
-export const OPENAPI_CONFIG = {
+export const SWAGGER_CONFIG = {
   exposeRoute: true,
   openapi: {
     components: {
@@ -42,3 +42,35 @@ export const OPENAPI_CONFIG = {
   },
   routePrefix: "/docs",
 };
+
+export const SWAGGER_UI_CONFIG = {
+  routePrefix: "/docs",
+  theme: {
+    css: [{ filename: "theme.css" }],
+  },
+  uiConfig: {
+    deepLinking: true,
+    defaultModelsExpandDepth: 3,
+    defaultModelExpandDepth: 3,
+    displayRequestDuration: true,
+    docExpansion: "list" as const,
+    filter: true,
+    operationsSorter: "alpha" as const,
+    persistAuthorization: true,
+    requestSnippetsEnabled: true,
+    requestSnippets: {
+      generators: {
+        curl_bash: { title: "cURL (bash)", syntax: "bash" },
+        curl_powershell: { title: "cURL (PowerShell)", syntax: "powershell" },
+      },
+      defaultExpanded: false,
+      languages: null,
+    },
+    syntaxHighlight: { theme: "monokai" as const },
+    tagsSorter: "alpha" as const,
+    tryItOutEnabled: true,
+  },
+};
+
+/** @deprecated use SWAGGER_CONFIG and SWAGGER_UI_CONFIG separately */
+export const OPENAPI_CONFIG = SWAGGER_CONFIG;

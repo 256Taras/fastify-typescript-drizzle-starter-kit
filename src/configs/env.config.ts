@@ -11,9 +11,9 @@ export const CONFIG_SCHEMA = Type.Object(
   {
     ALLOWED_ORIGINS: Type.Optional(Type.String()),
     APPLICATION_NAME: Type.String(),
-    APPLICATION_URL: Type.String({ format: "uri" }),
+    APPLICATION_URL: Type.String({ minLength: 1 }),
     DATABASE_TIMEOUT: Type.Integer(),
-    DATABASE_URL: Type.String({ format: "uri" }),
+    DATABASE_URL: Type.String({ minLength: 1 }),
     ENABLE_COLORIZED_LOG: TypeEnable,
     ENABLE_DB_LOGGING: TypeEnable,
     ENABLE_DEBUG: TypeEnable,
