@@ -1,0 +1,9 @@
+# Ephemeral state (not versioned)
+.cost-tracker
+.pre-compact-snapshot/
+.review/
+.archaeology/
+.migration-approved
+.logs/
+*.lock
+settings.local.json

@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "env": {
+    "MAX_THINKING_TOKENS": "2000",
+    "DISABLE_NON_ESSENTIAL_MODEL_CALLS": "1",
+    "BASH_DEFAULT_TIMEOUT_MS": "120000",
+    "BASH_MAX_TIMEOUT_MS": "900000",
+    "CLAUDE_PROJECT_NAME": "fastify-starter-kit",
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  },
+  "permissions": {
+    "allow": [
+      "Bash(pnpm:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm lint:fix:*)",
+      "Bash(pnpm prettier:fix:*)",
+      "Bash(pnpm check:types:*)",
+      "Bash(pnpm check:*)",
+      "Bash(pnpm db:generate:*)",
+      "Bash(pnpm db:push:*)",
+      "Bash(pnpm db:migrate:*)",
+      "Bash(pnpm db:seed:*)",
+      "Bash(pnpm db:studio:*)",
+      "Bash(pnpm db:check:*)",
+      "Bash(pnpm db:introspect:*)",
+      "Bash(pnpm db:up:*)",
+      "Bash(pnpm dc:infra:*)",
+      "Bash(pnpm dc:dev:*)",
+      "Bash(pnpm dc:monitoring:*)",
+      "Bash(pnpm generate:*)",
+      "Bash(pnpm deps:validate:*)",
+      "Bash(pnpm check:dep:*)",
+      "Bash(pnpm check:env:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git status:*)",
+      "Bash(git branch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git stash:*)",
+      "Bash(git notes:*)",
+      "Bash(git worktree:*)",
+      "Bash(git blame:*)",
+      "Bash(git show:*)",
+      "Bash(node:*)",
+      "Bash(npx tsc:*)",
+      "Bash(jq:*)",
+      "Bash(find:*)",
+      "Bash(rg:*)",
+      "Bash(cat:*)",
+      "Bash(head:*)",
+      "Bash(tail:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(touch:*)",
+      "Bash(wc:*)",
+      "Bash(date:*)",
+      "Bash(ENV_NAME=test:*)",
+      "Bash(docker ps:*)",
+      "Bash(docker exec:*)",
+      "WebSearch"
+    ],
+    "deny": [
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf ~/*)",
+      "Bash(curl:* | sh)",
+      "Bash(wget:* | sh)",
+      "Bash(sudo:*)",
+      "Bash(npm install*)",
+      "Bash(yarn:*)"
+    ]
+  },
+  "enableAllProjectMcpServers": false,
+  "enabledMcpjsonServers": [
+    "gitlab",
+    "jira",
+    "confluence",
+    "sentry",
+    "elk",
+    "postgres",
+    "context7"
+  ],
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/cost-budget.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-edit-guards.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-edit-test-lock.sh",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-bash-guards.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/post-edit-format.sh",
+            "timeout": 30
+          }
+        ]
+      }
+    ],
+    "PostToolUseFailure": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/reflexion-on-failure.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/pre-compact-snapshot.sh",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/stop-final-checks.sh",
+            "timeout": 60
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/subagent-stop-summary.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/post-compact-verify.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/session-end-log.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -202,7 +202,21 @@ pnpm dc:monitoring       # Observability stack
 - **IDE snippets** — VS Code snippets included
 - **Hot reload** — `node --watch`
 - **Drizzle Studio** — visual database browser
-- **Claude Code** — AI assistant configured
+- **Claude Code** — AI assistant configured ([full guide](docs/claude-code.md))
+
+---
+
+
+## 🤖 Claude Code
+
+This project includes a full `.claude/` configuration for AI-assisted development:
+
+- **Hooks** — auto-format on save, branch protection, migration locks, cost tracking, reflexion on failure
+- **Skills** — Awilix DI, Drizzle queries, Fastify routing, CQS patterns, E2E testing, migration safety
+- **Agents** — planner, migration reviewer, event tracer, cradle auditor, layer enforcer, adversarial review
+- **Commands** — `/spec`, `/new-module`, `/migration`, `/review-debate`, `/reflect`, `/event-trace`
+
+See [docs/claude-code.md](docs/claude-code.md) for the full usage guide.
 
 ---
 

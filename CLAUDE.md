@@ -1,3 +1,54 @@
+## Active Context (Auto-loaded)
+@.claude/REFLECTIONS.md
+@.claude/SESSION_STATE.md
+
+## Working Style — READ EVERY SESSION
+
+1. **REFLECTIONS first.** Before any non-trivial task, read `.claude/REFLECTIONS.md`. These are lessons learned the hard way. Apply them.
+
+2. **PRP or no work.** For anything beyond a 1-line fix, there must be a PRP file in `PRPs/`. If none exists, invoke `planner` agent first.
+
+3. **Append to REFLECTIONS on every fix.** When you make a mistake that needed correction, append a single line to `.claude/REFLECTIONS.md` in format:
+   `[YYYY-MM-DD] [domain] one-sentence lesson`
+   Examples of `domain`: drizzle, fastify, awilix, typebox, pino, events, auth, ci, deploy.
+
+4. **No `any`. No `console.log`. No commented-out code.** Three rules. Non-negotiable.
+
+5. **`/clear` between unrelated tasks.** Don't carry yesterday's context into today's bug.
+
+6. **Background processes for feedback loops.** When iterating on code, run `pnpm dev` in background and read its output via BashOutput. Don't restart. The dev server reloads itself.
+
+## Hard Forbidden
+- `git push --force` on shared branches (blocked by hook)
+- Edits to `drizzle/migrations/**` without invoking `drizzle-migration-reviewer` (blocked by hook)
+- Edits to `.env*` (blocked by hook)
+- Edits on `main`/`master`/`develop` branches (blocked by hook)
+- Disabling tests to make them pass
+- Adding new deps without checking existing alternatives
+- `--dangerously-skip-permissions` in any automation script
+
+## Available Subagents (read `.claude/agents/*.md` for full prompts)
+- `planner` — read-only, generates PRP
+- `code-archaeologist` — read-only, deep codebase exploration
+- `drizzle-migration-reviewer` — read-only, validates migration safety
+- `event-flow-tracer` — read-only, traces event emission → handling
+- `cradle-auditor` — read-only, validates DI container consistency
+- `layer-boundary-enforcer` — read-only, checks architecture layer violations
+- `defender` / `attacker` / `judge` — multi-agent debate review (for critical changes)
+- `meta-agent` — generates new subagents on demand
+
+## Available Skills (auto-load by glob)
+Skills load conditionally based on file paths via frontmatter `globs:`. Don't ask Claude to "use a skill" — just touch the relevant files and the right skills load themselves.
+
+## Default Models
+- Main session: sonnet
+- Read-only research agents: haiku (cheap, fast)
+- Critical review agents (defender/attacker/judge): sonnet
+- Architecture decisions only: opus (use `/effort high`)
+- MAX_THINKING_TOKENS: 2000 (overridden in settings.json)
+
+---
+
 # Project Instructions
 
 You are an expert Node.js architect working on a **production-grade Fastify starter kit**.
