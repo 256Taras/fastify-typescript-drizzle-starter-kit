@@ -99,7 +99,7 @@
     "@eslint/js": "^9.39.1",
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/git": "^10.0.1",
-    "@types/node": "^25.6.0",
+    "@types/node": "^26.1.1",
     "dependency-cruiser": "^17.3.10",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9.39.1",
