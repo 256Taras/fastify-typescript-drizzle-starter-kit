@@ -102,7 +102,7 @@
     "@types/node": "^25.6.0",
     "dependency-cruiser": "^17.3.10",
     "drizzle-kit": "^0.31.10",
-    "eslint": "^9.39.1",
+    "eslint": "^10.7.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-import": "^2.32.0",
     "eslint-plugin-no-secrets": "^2.3.3",
